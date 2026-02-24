@@ -1,8 +1,11 @@
 import numpy as np
 
 class Bolt:
-    def __init__(self, name):
-        self.name = name
+    numBoltTypes = 0
+    def __init__(self, ideal = False):
+        Bolt.numBoltTypes += 1
+        self.name = "Sample type " + str(Bolt.numBoltTypes)
+        self.ideal = ideal
         self.avg = None
         self.stdDev = None
         self.min = None
@@ -14,7 +17,7 @@ class Bolt:
 
     def set_range(self, a):
         #TODO check that there are enough values
-        arr = np.array(self.samples)
+        arr = np.array(self.samples) #converts list to array
 
         self.avg = np.mean(arr)
         self.stdDev = np.std(arr, ddof=1)
@@ -23,9 +26,33 @@ class Bolt:
         self.max = self.avg + self.stdDev * a
 
     def in_range(self, b):
+        #TODO make sure set_range has been called first
+        if self.max is None or self.min is None:
+            return
         return self.min <= b <= self.max
         
+#functions
+def display_menu():
+    print("Main menu")
+    print("1. Add bolt")
 
+#variables
+difBoltTypes = []
 
+while True:
+    display_menu()
+    userInput = input()
+
+    match userInput:
+        case "f":
+            break
+        case "1":
+            if input("is this bolt ideal? (y/n) : ") == "y":
+                difBoltTypes.append(Bolt(True))
+            else:
+                difBoltTypes.append(Bolt())
+        case _:
+            print("Invalid option")
+            
 
 
