@@ -51,8 +51,15 @@ while True:
                 difBoltTypes.append(Bolt(True))
             else:
                 difBoltTypes.append(Bolt())
+            
+            while True:
+                value = input("Enter test value (press c if done)")
+                if value == "c":
+                    break
+                else:
+                    difBoltTypes[Bolt.numBoltTypes - 1].samples.append(int(value))
         case _:
             print("Invalid option")
             
-
+print(difBoltTypes[0].samples[1])
 
