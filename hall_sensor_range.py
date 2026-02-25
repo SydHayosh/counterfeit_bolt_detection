@@ -35,9 +35,11 @@ class Bolt:
 def display_menu():
     print("Main menu")
     print("1. Add bolt")
+    print("2. Test sample")
 
 #variables
 difBoltTypes = []
+acceptedStdDev = 3
 
 while True:
     display_menu()
@@ -53,13 +55,25 @@ while True:
                 difBoltTypes.append(Bolt())
             
             while True:
+                # Relies on user entering the correct values.
+                # In the final product the hardware will eliminate error.
                 value = input("Enter test value (press c if done)")
                 if value == "c":
-                    break
+                    if len(difBoltTypes[Bolt.numBoltTypes - 1].samples) < 2:
+                        print("You need at least two samples per bolt type.")
+                    else:
+                        difBoltTypes[Bolt.numBoltTypes - 1].set_range(acceptedStdDev)
+                        break
                 else:
-                    difBoltTypes[Bolt.numBoltTypes - 1].samples.append(int(value))
+                    difBoltTypes[Bolt.numBoltTypes - 1].add_sample(float(value))
         case _:
             print("Invalid option")
             
-print(difBoltTypes[0].samples[1])
+
+print("\n--- " + difBoltTypes[0].name + " ---")
+print("Sample data: " + f"{difBoltTypes[0].samples}")
+print("Average: " + f"{difBoltTypes[0].avg}")
+print("Standard Deviation: " + f"{difBoltTypes[0].stdDev}")
+print("Minimum: " + f"{difBoltTypes[0].min}")
+print("Maximum: " + f"{difBoltTypes[0].max}")
 
