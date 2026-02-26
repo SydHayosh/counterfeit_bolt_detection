@@ -16,7 +16,7 @@ class Bolt:
         self.samples.append(s)
 
     def set_range(self, a):
-        #TODO check that there are enough values
+        # Checking that there are enough values is currently preformed before calling this function
         arr = np.array(self.samples) #converts list to array
 
         self.avg = np.mean(arr)
@@ -26,18 +26,27 @@ class Bolt:
         self.max = self.avg + self.stdDev * a
 
     def in_range(self, b):
-        #TODO make sure set_range has been called first
-        if self.max is None or self.min is None:
+        # Code structure currently prevents in_range from being called before set_range
+        if self.max is None or self.min is None: # TODO If range is always set before this function is called maybe delete this?
             return
         return self.min <= b <= self.max
         
-#functions
+# functions
 def display_menu():
     print("Main menu")
     print("1. Add bolt")
     print("2. Test sample")
 
-#variables
+def print_bolt_values(i):
+    print("\n--- " + difBoltTypes[i].name + " ---")
+    print("Ideal: " + f"{difBoltTypes[i].ideal}")
+    print("Sample data: " + f"{difBoltTypes[i].samples}")
+    print("Average: " + f"{difBoltTypes[i].avg}")
+    print("Standard Deviation: " + f"{difBoltTypes[i].stdDev}")
+    print("Minimum: " + f"{difBoltTypes[i].min}")
+    print("Maximum: " + f"{difBoltTypes[i].max}")
+
+# variables
 difBoltTypes = []
 acceptedStdDev = 3
 
@@ -49,7 +58,7 @@ while True:
         case "f":
             break
         case "1":
-            if input("is this bolt ideal? (y/n) : ") == "y":
+            if input("is this bolt ideal? (y/n): ") == "y":
                 difBoltTypes.append(Bolt(True))
             else:
                 difBoltTypes.append(Bolt())
@@ -57,23 +66,26 @@ while True:
             while True:
                 # Relies on user entering the correct values.
                 # In the final product the hardware will eliminate error.
-                value = input("Enter test value (press c if done)")
-                if value == "c":
-                    if len(difBoltTypes[Bolt.numBoltTypes - 1].samples) < 2:
+                value = input("Enter test value (press f if done) ")
+                if value == "f":
+                    if len(difBoltTypes[-1].samples) < 2:
                         print("You need at least two samples per bolt type.")
                     else:
-                        difBoltTypes[Bolt.numBoltTypes - 1].set_range(acceptedStdDev)
+                        difBoltTypes[-1].set_range(acceptedStdDev)
                         break
                 else:
-                    difBoltTypes[Bolt.numBoltTypes - 1].add_sample(float(value))
+                    difBoltTypes[-1].add_sample(float(value))
+        case "2":
+            if len(difBoltTypes) == 0:
+                print("Sample data needs to be collected first")
+            else:
+                testSample = float(input("Enter test value: "))
+                print("Pass: " + f"{difBoltTypes[-1].in_range(testSample)}")
+                # TODO currently just looks if bolt is in range but does not check if the range it is in is ideal
         case _:
             print("Invalid option")
             
 
-print("\n--- " + difBoltTypes[0].name + " ---")
-print("Sample data: " + f"{difBoltTypes[0].samples}")
-print("Average: " + f"{difBoltTypes[0].avg}")
-print("Standard Deviation: " + f"{difBoltTypes[0].stdDev}")
-print("Minimum: " + f"{difBoltTypes[0].min}")
-print("Maximum: " + f"{difBoltTypes[0].max}")
+if len(difBoltTypes) > 0:
+    print_bolt_values(0)
 
