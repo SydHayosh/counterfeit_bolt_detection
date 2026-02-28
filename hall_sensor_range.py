@@ -15,6 +15,7 @@ class Bolt:
     def add_sample(self, s):
         self.samples.append(s)
 
+    # TODO replace range check and set by looking at how many standard deviations a value is away from the mean.
     def set_range(self, a):
         # Checking that there are enough values is currently preformed before calling this function
         arr = np.array(self.samples) #converts list to array
@@ -65,7 +66,7 @@ while True:
             
             while True:
                 # Relies on user entering the correct values.
-                # In the final product the hardware will eliminate error.
+                # In the final product the hardware will eliminate this error.
                 value = input("Enter test value (press f if done) ")
                 if value == "f":
                     if len(difBoltTypes[-1].samples) < 2:
