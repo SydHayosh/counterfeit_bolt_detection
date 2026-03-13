@@ -1,6 +1,6 @@
 import cv2 as cv
 
-img = cv.imread('Photos/ideal_bolt_top.jpg')
+img = cv.imread('Photos/rawtest.jpg')
 imgCT = cv.imread('Photos/counterfeit_bolt_titanium.jpg')
 imgCB = cv.imread('Photos/counterfeit_bolt_black.jpg')
 
