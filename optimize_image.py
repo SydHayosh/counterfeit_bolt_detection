@@ -1,6 +1,6 @@
 import cv2 as cv
 
-img = cv.imread('Photos/ppt_ex_head.jpg')
+img = cv.imread('Photos/ppt_ex_shaft.jpg')
 #imgCT = cv.imread('Photos/counterfeit_bolt_titanium.jpg')
 #imgCB = cv.imread('Photos/counterfeit_bolt_black.jpg')
 
@@ -25,7 +25,9 @@ if img is None:
 # cv.imshow("ROI Location", preview)
 
 print(img.shape)
-roi = img[1550:2050, 2380:2880] #Region of Interest image[y1:y2, x1:x2]
+roi = img[1600:2000, 1900:3250] #Region of Interest image[y1:y2, x1:x2]
+#[1550:2050, 2380:2880] for the bolt
+#[1600:2000, 1900:3250] for the shaft
 #cv.imshow('ROI', roi)
 # TODO look into HoughCircles()
 gray = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
@@ -38,9 +40,9 @@ cv.imwrite("Photos/output/Gray.jpg", gray)
 # grayCB = cv.cvtColor(imgCB, cv.COLOR_BGR2GRAY)
 # cv.imwrite('Photos/output/Gray Counterfeit Black.jpg', grayCB)
 cannyMin50 = gray.copy()*0
-cannyMin50[1550:2050, 2380:2880] = cv.Canny(gray.copy()[1550:2050, 2380:2880], 50, 70)
+cannyMin50[1600:2000, 1900:3250] = cv.Canny(gray.copy()[1600:2000, 1900:3250], 100, 175)
 #cv.imshow('Canny Edges', cannyMin50)
-cv.imwrite("Photos/output/Canny Edges 50.jpg", cannyMin50)
+cv.imwrite("Photos/output/Canny Edges Shaft.jpg", cannyMin50)
 
 cannyMin100 = cv.Canny(gray.copy(), 100, 175)
 cv.imwrite("Photos/output/Canny Edges 100.jpg", cannyMin100)
