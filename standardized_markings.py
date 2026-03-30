@@ -32,10 +32,10 @@ grayCB = cv.cvtColor(imgCB, cv.COLOR_BGR2GRAY)
 cv.imwrite('Photos/output/Gray Counterfeit Black.jpg', grayCB)
 
 #gray = cv.GaussianBlur(gray, (7, 7), 0)
-blur = cv.medianBlur(gray,301) #number must be odd
-cimg = img.copy()
+blur = cv.medianBlur(grayCT,301) #number must be odd
+cimg = imgCT.copy()
  
-circles = cv.HoughCircles(blur,cv.HOUGH_GRADIENT,1,20,param1=50,param2=31,minRadius=210,maxRadius=250)
+circles = cv.HoughCircles(blur,cv.HOUGH_GRADIENT,1,20,param1=50,param2=32,minRadius=210,maxRadius=300)
 
 if circles is not None: 
     circles = np.uint16(np.around(circles))
