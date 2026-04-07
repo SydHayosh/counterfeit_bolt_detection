@@ -31,25 +31,25 @@ cv.imwrite('Photos/output/Gray Counterfeit Titanium.jpg', grayCT)
 grayCB = cv.cvtColor(imgCB, cv.COLOR_BGR2GRAY)
 cv.imwrite('Photos/output/Gray Counterfeit Black.jpg', grayCB)
 
-#gray = cv.GaussianBlur(gray, (7, 7), 0)
-blur = cv.medianBlur(grayCT,301) #number must be odd
-cimg = imgCT.copy()
+# #gray = cv.GaussianBlur(gray, (7, 7), 0)
+# blur = cv.medianBlur(grayCT,301) #number must be odd
+# cimg = imgCT.copy()
  
-circles = cv.HoughCircles(blur,cv.HOUGH_GRADIENT,1,20,param1=50,param2=32,minRadius=210,maxRadius=300)
+# circles = cv.HoughCircles(blur,cv.HOUGH_GRADIENT,1,20,param1=50,param2=32,minRadius=210,maxRadius=300)
 
-if circles is not None: 
-    circles = np.uint16(np.around(circles))
-    for i in circles[0,:]:
-        # draw the outer circle
-        cv.circle(cimg,(i[0],i[1]),i[2],(0,255,0),2)
-        # draw the center of the circle
-        cv.circle(cimg,(i[0],i[1]),2,(0,0,255),3)
+# if circles is not None: 
+#     circles = np.uint16(np.around(circles))
+#     for i in circles[0,:]:
+#         # draw the outer circle
+#         cv.circle(cimg,(i[0],i[1]),i[2],(0,255,0),2)
+#         # draw the center of the circle
+#         cv.circle(cimg,(i[0],i[1]),2,(0,0,255),3)
 
-else:
-    print("No circles detected")
+# else:
+#     print("No circles detected")
  
-cv.imshow('detected circles',cimg)
-cv.imwrite("Photos/output/detected circles.jpg",cimg)
+# cv.imshow('detected circles',cimg)
+# cv.imwrite("Photos/output/detected circles.jpg",cimg)
 
 canny = cv.Canny(gray, 125, 175)
 cv.imshow('Canny Edges', canny)
