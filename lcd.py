@@ -41,13 +41,20 @@ def display_menu():
     # lcd.clear
     # lcd.write(0,0, mainMenu[topDisplayIndex].name)
     # lcd.write(0,0, mainMenu[topDisplayIndex+1].name)
+    arrowTail = "   |\n"
+    arrowHead = "   v\n"
+
+    if(topDisplayIndex+1 == len(mainMenu)-1):
+        arrowTail = "\n"
+        arrowHead = "\n"
+
     if (currentIndex == topDisplayIndex):
-        print("->" + mainMenu[topDisplayIndex].name)
-        print(mainMenu[topDisplayIndex+1].name)
+        print(f"-> {topDisplayIndex+1}. " + mainMenu[topDisplayIndex].name, end=arrowTail)
+        print(f"   {topDisplayIndex+2}. " + mainMenu[topDisplayIndex+1].name, end=arrowHead)
     
     else:
-        print(mainMenu[topDisplayIndex].name)
-        print("->" + mainMenu[topDisplayIndex+1].name)
+        print(f"   {topDisplayIndex+1}. " + mainMenu[topDisplayIndex].name, end=arrowTail)
+        print(f"-> {topDisplayIndex+2}. " + mainMenu[topDisplayIndex+1].name, end=arrowHead)
 
 
 # add to menu
@@ -70,9 +77,12 @@ while True:
             topDisplayIndex += 1
 
     elif(toggle == "w" and currentIndex > 0):
+        print(f"The current index is {currentIndex}")
+        print(f"The top of the display index is {topDisplayIndex}")
         currentIndex -= 1
-        if(currentIndex < topDisplayIndex - 1):
+        
+        if(currentIndex <= topDisplayIndex - 1):
             topDisplayIndex -= 1
-            print(topDisplayIndex)
+            
     
     

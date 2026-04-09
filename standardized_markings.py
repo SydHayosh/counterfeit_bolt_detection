@@ -5,6 +5,10 @@ img = cv.imread('Photos/ideal_bolt_top.jpg')
 imgCT = cv.imread('Photos/counterfeit_bolt_titanium.jpg')
 imgCB = cv.imread('Photos/counterfeit_bolt_black.jpg')
 
+# Canny edge thresholds
+lowerThresh = 125
+upperThresh = 175
+
 if img is None:
     print("Image failed to load")
     exit()
@@ -51,27 +55,41 @@ cv.imwrite('Photos/output/Gray Counterfeit Black.jpg', grayCB)
 # cv.imshow('detected circles',cimg)
 # cv.imwrite("Photos/output/detected circles.jpg",cimg)
 
-canny = cv.Canny(gray, 125, 175)
+canny = cv.Canny(gray, lowerThresh, upperThresh)
+canny = cv.dilate(canny, None, iterations=2)
+canny = cv.erode(canny, None, iterations=0)
 cv.imshow('Canny Edges', canny)
 cv.imwrite("Photos/output/Canny Edges.jpg", canny)
 
-cannyCT = cv.Canny(grayCT, 125, 175)
+cannyCT = cv.Canny(grayCT, lowerThresh, upperThresh)
 cv.imwrite("Photos/output/Canny Edges Counterfeit Titanium.jpg", cannyCT)
 
-cannyCB = cv.Canny(grayCB, 125, 175)
+cannyCB = cv.Canny(grayCB, lowerThresh, upperThresh)
 cv.imwrite("Photos/output/Canny Edges Counterfeit Black.jpg", cannyCB)
 
-contours, hierarchies = cv.findContours(canny, cv.RETR_LIST, cv.CHAIN_APPROX_NONE)
+contours, hierarchies = cv.findContours(canny, cv.RETR_TREE, cv.CHAIN_APPROX_NONE)
 print(f'{len(contours)} countours(s) found on the ideal bolt!')
+hierarchies = hierarchies[0]
 
-contoursCT, hierarchies = cv.findContours(cannyCT, cv.RETR_LIST, cv.CHAIN_APPROX_NONE)
+contoursCT, hierarchiesCT = cv.findContours(cannyCT, cv.RETR_LIST, cv.CHAIN_APPROX_NONE)
 print(f'{len(contoursCT)} countours(s) found on the titanium bolt!')
 
-contoursCB, hierarchies = cv.findContours(cannyCB, cv.RETR_LIST, cv.CHAIN_APPROX_NONE)
+contoursCB, hierarchiesCB = cv.findContours(cannyCB, cv.RETR_LIST, cv.CHAIN_APPROX_NONE)
 print(f'{len(contoursCB)} countours(s) found on the black bolt!')
 
 idealBoltPhoto = img.copy()
-cv.drawContours(idealBoltPhoto, contours, -1, (0,255,0), 10) #cv.drawContours(image being drawn on, contours, which contours to draw? just use -1, color, line thickness)
+for i, contour in enumerate(contours):
+    area = cv.contourArea(contour)
+
+    if area > 100:
+        if hierarchies[i][3] == -1:
+            # outer contour
+            cv.drawContours(idealBoltPhoto, contours, i, (0,255,0), 3)
+        else:
+            # inner contour
+            cv.drawContours(idealBoltPhoto, contours, i, (0,0,255), 3)
+#cv.drawContours(idealBoltPhoto, contours, -1, (0,255,0), 10) #cv.drawContours(image being drawn on, contours, which contours to draw? just use -1, color, line thickness)
+cv.imshow('Contours', idealBoltPhoto)
 cv.imwrite("Photos/output/Contours on the Ideal Bolt.jpg", idealBoltPhoto)
 
 
