@@ -1,6 +1,5 @@
-This branch is dedicated to the code that will be ran directly on the Rpi
-
-========================================================================
+This is a duplicate of onchipCBDS that I (Julian) am using to figure out how to pull from git on the CBDS
+=========================================================================================================
 frameworkMagnetics - Folder dedicated to the Hall Sensor stage
   -hallReader.py
     Reads inputs from Hall Sensor, compares to established dataset, returns Pass/Fail to inspectStager.py
