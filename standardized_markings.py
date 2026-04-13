@@ -1,7 +1,7 @@
 import numpy as np
 import cv2 as cv
 
-img = cv.imread('Photos/ideal_bolt_top.jpg')
+img = cv.imread('Photos/counterfeit_bolt_black.jpg')
 imgCT = cv.imread('Photos/counterfeit_bolt_titanium.jpg')
 imgCB = cv.imread('Photos/counterfeit_bolt_black.jpg')
 
@@ -56,8 +56,9 @@ cv.imwrite('Photos/output/Gray Counterfeit Black.jpg', grayCB)
 # cv.imwrite("Photos/output/detected circles.jpg",cimg)
 
 canny = cv.Canny(gray, lowerThresh, upperThresh)
-canny = cv.dilate(canny, None, iterations=2)
-canny = cv.erode(canny, None, iterations=0)
+canny = cv.dilate(canny, None, iterations=1)
+#canny = cv.erode(canny, None, iterations=1)
+#canny = cv.dilate(canny, None, iterations=1)
 cv.imshow('Canny Edges', canny)
 cv.imwrite("Photos/output/Canny Edges.jpg", canny)
 
@@ -77,21 +78,25 @@ print(f'{len(contoursCT)} countours(s) found on the titanium bolt!')
 contoursCB, hierarchiesCB = cv.findContours(cannyCB, cv.RETR_LIST, cv.CHAIN_APPROX_NONE)
 print(f'{len(contoursCB)} countours(s) found on the black bolt!')
 
+markings = []
+
 idealBoltPhoto = img.copy()
 for i, contour in enumerate(contours):
     area = cv.contourArea(contour)
 
-    if area > 100:
+    if area > 400:
         if hierarchies[i][3] == -1:
             # outer contour
             cv.drawContours(idealBoltPhoto, contours, i, (0,255,0), 3)
-        else:
+        elif area < 1500:
             # inner contour
+            markings.append(contour)
             cv.drawContours(idealBoltPhoto, contours, i, (0,0,255), 3)
 #cv.drawContours(idealBoltPhoto, contours, -1, (0,255,0), 10) #cv.drawContours(image being drawn on, contours, which contours to draw? just use -1, color, line thickness)
 cv.imshow('Contours', idealBoltPhoto)
 cv.imwrite("Photos/output/Contours on the Ideal Bolt.jpg", idealBoltPhoto)
 
+print(f'\n There are {len(markings)} standardized markings')
 
 
 cv.waitKey(0)
