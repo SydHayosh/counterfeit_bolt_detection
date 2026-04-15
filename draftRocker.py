@@ -3,20 +3,18 @@ import time
 import digitalio
 import numpy as np
 
-UP = digitalio.DigitalInOut(board.D6)
-DWN = digitalio.DigitalInOut(board.D5)
-L = digitalio.DigitalInOut(board.D13)
-R = digitalio.DigitalInOut(board.D12)
-MID = digitalio.DigitalInOut(board.D19)
-
-UP.direction = digitalio.Direction.INPUT
-DWN.direction = digitalio.Direction.INPUT
-L.direction = digitalio.Direction.INPUT
-R.direction = digitalio.Direction.INPUT
-MID.direction = digitalio.Direction.INPUT
+UP = digitalio.DigitalInOut(board.D6)#5
+DWN = digitalio.DigitalInOut(board.D5)#6
+L = digitalio.DigitalInOut(board.D13)#12
+R = digitalio.DigitalInOut(board.D12)#13
+MID = digitalio.DigitalInOut(board.D19)#19
 
 inputPins = [UP, DWN, L, R, MID]
 inputNames = ['UP', 'DWN', 'L', 'R', 'MID']
+
+for pin in inputPins:
+    pin.direction = digitalio.Direction.INPUT
+    pin.pull = digitalio.Pull.UP
 
 #print("Press MID to begin test...")
 
