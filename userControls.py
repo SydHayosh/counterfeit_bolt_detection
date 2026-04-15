@@ -64,16 +64,14 @@ def display_menu():# use lcd.write_string instead of lcd.write
         try:
           
           lcd.cursor_pos = (0,0)#(row, col)
-          lcd.write_string(f"-> {topDisplayIndex+1}. " + mainMenu[topDisplayIndex].name)
+          lcd.write_string(f"->{topDisplayIndex+1}." + mainMenu[topDisplayIndex].name)
           
           lcd.cursor_pos = (1,0)
-          lcd.write_string(f"   {topDisplayIndex+2}. " + mainMenu[topDisplayIndex+1].name)
+          lcd.write_string(f"  {topDisplayIndex+2}." + mainMenu[topDisplayIndex+1].name)
           
           print(f"-> {topDisplayIndex+1}. " + mainMenu[topDisplayIndex].name)
           print(f"   {topDisplayIndex+2}. " + mainMenu[topDisplayIndex+1].name)
-          
-          # Keep it displayed for a while
-          time.sleep(10)
+
           
         except Exception as e:
           print("Error:", e)
@@ -83,10 +81,10 @@ def display_menu():# use lcd.write_string instead of lcd.write
         try:
           
           lcd.cursor_pos = (0,0)#(row, col)
-          lcd.write_string(f"   {topDisplayIndex+1}. " + mainMenu[topDisplayIndex].name)
+          lcd.write_string(f"  {topDisplayIndex+1}." + mainMenu[topDisplayIndex].name)
           
           lcd.cursor_pos = (1,0)
-          lcd.write_string(f"-> {topDisplayIndex+2}. " + mainMenu[topDisplayIndex+1].name)
+          lcd.write_string(f"->{topDisplayIndex+2}." + mainMenu[topDisplayIndex+1].name)
           
           print(f"   {topDisplayIndex+1}. " + mainMenu[topDisplayIndex].name)
           print(f"-> {topDisplayIndex+2}. " + mainMenu[topDisplayIndex+1].name)
@@ -117,6 +115,7 @@ while True:
                 currentIndex += 1
                 if(currentIndex > topDisplayIndex + 1):
                     topDisplayIndex += 1
+                display_menu()
         
             elif(inputPins[i] == UP and currentIndex > 0):
                 print(f"The current index is {currentIndex}")
@@ -125,8 +124,9 @@ while True:
                 
                 if(currentIndex <= topDisplayIndex - 1):
                     topDisplayIndex -= 1
+                display_menu()
                   
-            display_menu()
+            
             
         lastState[i] = currentState
         
