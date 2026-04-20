@@ -55,6 +55,7 @@ idealBolt = None
 def setup_read_dataset(num_std=acceptedNumOfStdDev):
     # Example dataset (replace with Excel later)
     global idealBolt
+    idealBolt = Bolt(ideal=True)
     data = [10.1, 9.9, 10.0, 10.2, 9.8]
 
     for d in data:
