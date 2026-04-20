@@ -173,7 +173,7 @@ while True:
             print(f"{inputNames[i]} pressed")
 
             # Moves down the current menu options
-            if(inputPins[i] == DWN and currentIndex+1 < len(mainMenu)):
+            if(inputPins[i] == DWN and currentIndex+1 < len(currentMenu)):
                 currentIndex += 1
                 if(currentIndex > topDisplayIndex + 1):
                     topDisplayIndex += 1
