@@ -1,3 +1,4 @@
+from frameworkMagnetics.hallReader import setup_read_dataset, mag_test
 from RPLCD.i2c import CharLCD
 import time
 import board
@@ -38,6 +39,7 @@ def updateMenu(newMenu):
 # Main menu options
 def startTest():
     print("Begin Test selected")
+    mag_test(10.15) #test value hallReader.py should get this value on its own
 
 def exportData():
     print("Data Export selected")
@@ -162,6 +164,9 @@ debugMenu.append(MenuOption("LED Test", ledTest))
 
 
 lastState = [True] * len(inputPins)
+
+# Reads the ideal bolt magnetic dataset
+setup_read_dataset()
 
 display_menu()
 
