@@ -29,6 +29,13 @@ lcd = CharLCD(
     auto_linebreaks = False
 )
 
+def updateMenu(newMenu):
+    global currentMenu, currentIndex, topDisplayIndex
+    currentMenu = newMenu
+    currentIndex = 0
+    topDisplayIndex = 0
+
+# Main menu options
 def startTest():
     print("Begin Test selected")
 
@@ -37,22 +44,64 @@ def exportData():
 
 def settings():
     print("Settings selected")
+    updateMenu(settingsMenu)
 
-def debugMenu():
+def debugSubmenu():
     print("Debug Menu selected")
+    updateMenu(debugMenu)
+
+
+# Settings menu options
+def idealBolt():
+    print("Ideal Bolt selected")
+
+def advSettings():
+    print("Advanced Settings selected")
+    updateMenu(advSettingsMenu)
+
+
+# Advanced settings menu options
+def magCriteria():
+    print("Magnetic criteriat selected")
+
+def magTestDuration():
+    print("Mag Test Duration selected")
+
+def changeBolt():
+    print("Change Bolt-type selected")
+
+def update():
+    print("Update selected")
+
+
+# Debug menu options
+def pinCheck():
+    print("Check Connections selected")
+
+def cameraTest():
+    print("Camera Test selected")
+
+def magCalibration():
+    print("Magnetics Calibration selected")
+
+def ledTest():
+    print("LED Test selected")
 
 # class containing the menu option name and action that it preforms
 class MenuOption:
     def __init__(self, name, action = None):
         self.name = name
         self.action = action
-        #self.children = children or [] #incase we add submenus
 
 # variables
 mainMenu = []
+settingsMenu = []
+advSettingsMenu = []
+debugMenu = []
 currentIndex = 0
 topDisplayIndex = 0 #When the menu is greater then 2 options 
 
+currentMenu = mainMenu
 
 # functions
 def display_menu():# use lcd.write_string instead of lcd.write
@@ -62,13 +111,13 @@ def display_menu():# use lcd.write_string instead of lcd.write
         try:
           
           lcd.cursor_pos = (0,0)#(row, col)
-          lcd.write_string(f"->{topDisplayIndex+1}." + mainMenu[topDisplayIndex].name)
+          lcd.write_string(f"->{topDisplayIndex+1}." + currentMenu[topDisplayIndex].name)
           
           lcd.cursor_pos = (1,0)
-          lcd.write_string(f"  {topDisplayIndex+2}." + mainMenu[topDisplayIndex+1].name)
+          lcd.write_string(f"  {topDisplayIndex+2}." + currentMenu[topDisplayIndex+1].name)
           
-          print(f"-> {topDisplayIndex+1}. " + mainMenu[topDisplayIndex].name)
-          print(f"   {topDisplayIndex+2}. " + mainMenu[topDisplayIndex+1].name)
+          print(f"-> {topDisplayIndex+1}. " + currentMenu[topDisplayIndex].name)
+          print(f"   {topDisplayIndex+2}. " + currentMenu[topDisplayIndex+1].name)
 
           
         except Exception as e:
@@ -79,25 +128,38 @@ def display_menu():# use lcd.write_string instead of lcd.write
         try:
           
           lcd.cursor_pos = (0,0)#(row, col)
-          lcd.write_string(f"  {topDisplayIndex+1}." + mainMenu[topDisplayIndex].name)
+          lcd.write_string(f"  {topDisplayIndex+1}." + currentMenu[topDisplayIndex].name)
           
           lcd.cursor_pos = (1,0)
-          lcd.write_string(f"->{topDisplayIndex+2}." + mainMenu[topDisplayIndex+1].name)
+          lcd.write_string(f"->{topDisplayIndex+2}." + currentMenu[topDisplayIndex+1].name)
           
-          print(f"   {topDisplayIndex+1}. " + mainMenu[topDisplayIndex].name)
-          print(f"-> {topDisplayIndex+2}. " + mainMenu[topDisplayIndex+1].name)
+          print(f"   {topDisplayIndex+1}. " + currentMenu[topDisplayIndex].name)
+          print(f"-> {topDisplayIndex+2}. " + currentMenu[topDisplayIndex+1].name)
           
           
         except Exception as e:
           print("Error:", e)
         
 
-
-# add to menu
+# Populates menu and submenus
 mainMenu.append(MenuOption("Begin Test", startTest))
 mainMenu.append(MenuOption("Data Export", exportData))
 mainMenu.append(MenuOption("Settings", settings))
-mainMenu.append(MenuOption("Debug Menu", debugMenu))
+mainMenu.append(MenuOption("Debug Menu", debugSubmenu))
+
+settingsMenu.append(MenuOption("Ideal Bolt", idealBolt))
+settingsMenu.append(MenuOption("Advanced Settings", advSettings))
+
+advSettingsMenu.append(MenuOption("Magnetic criteria", magCriteria))
+advSettingsMenu.append(MenuOption("Mag Test Duration", magTestDuration))
+advSettingsMenu.append(MenuOption("Change Bolt-type", changeBolt))
+advSettingsMenu.append(MenuOption("Update", update))
+
+debugMenu.append(MenuOption("Check Connections", pinCheck))
+debugMenu.append(MenuOption("Camera Test", cameraTest))
+debugMenu.append(MenuOption("Magnetics Calibration", magCalibration))
+debugMenu.append(MenuOption("LED Test", ledTest))
+
 
 lastState = [True] * len(inputPins)
 
@@ -109,19 +171,31 @@ while True:
         
         if lastState[i] == True and currentState == False:
             print(f"{inputNames[i]} pressed")
+
+            # Moves down the current menu options
             if(inputPins[i] == DWN and currentIndex+1 < len(mainMenu)):
                 currentIndex += 1
                 if(currentIndex > topDisplayIndex + 1):
                     topDisplayIndex += 1
                 display_menu()
-        
+
+            # Moves up the current menu options
             elif(inputPins[i] == UP and currentIndex > 0):
                 currentIndex -= 1
                 
                 if(currentIndex <= topDisplayIndex - 1):
                     topDisplayIndex -= 1
                 display_menu()
-                  
+
+            # Selects current highlighted menu options
+            elif(inputPins[i] == MID or inputPins[i] == R):
+                currentMenu[currentIndex].action()
+                display_menu() #TODO maybe move this to updateMenu
+            
+            # Goes back to main menu
+            elif(inputPins[i] == L):
+                updateMenu(mainMenu)
+                display_menu() #TODO maybe move this to updateMenu
             
             
         lastState[i] = currentState
