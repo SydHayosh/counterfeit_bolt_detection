@@ -4,6 +4,7 @@ import board
 import digitalio
 import numpy as np
 
+# Sets direction to pins
 UP = digitalio.DigitalInOut(board.D6)#5
 DWN = digitalio.DigitalInOut(board.D5)#6
 L = digitalio.DigitalInOut(board.D13)#12
@@ -13,6 +14,7 @@ MID = digitalio.DigitalInOut(board.D19)#19
 inputPins = [UP, DWN, L, R, MID]
 inputNames = ['UP', 'DWN', 'L', 'R', 'MID']
 
+# Sets the pins default state and type
 for pin in inputPins:
     pin.direction = digitalio.Direction.INPUT
     pin.pull = digitalio.Pull.UP
@@ -27,11 +29,6 @@ lcd = CharLCD(
     auto_linebreaks = False
 )
 
-#button pins
-up = 10
-down = 11
-select = 12
-
 def startTest():
     print("Begin Test selected")
 
@@ -44,6 +41,7 @@ def settings():
 def debugMenu():
     print("Debug Menu selected")
 
+# class containing the menu option name and action that it preforms
 class MenuOption:
     def __init__(self, name, action = None):
         self.name = name
@@ -118,8 +116,6 @@ while True:
                 display_menu()
         
             elif(inputPins[i] == UP and currentIndex > 0):
-                print(f"The current index is {currentIndex}")
-                print(f"The top of the display index is {topDisplayIndex}")
                 currentIndex -= 1
                 
                 if(currentIndex <= topDisplayIndex - 1):
