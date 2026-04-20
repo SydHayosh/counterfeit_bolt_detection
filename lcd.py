@@ -20,6 +20,9 @@ def exportData():
 
 def settings():
     print("Settings selected")
+    currentMenu = settingsMenu
+    currentIndex = 0
+    topDisplayIndex = 0
 
 def debugMenu():
     print("Debug Menu selected")
@@ -30,31 +33,41 @@ class MenuOption:
         self.action = action
         #self.children = children or [] #incase we add submenus
 
+# class MenuAndSubmenus:
+#     def __init__(self, menuOptions, currentIndex = 0, topDisplayIndex = 0):
+#         self.menuOptions = menuOptions
+#         self.currentIndex = currentIndex
+#         self.topDisplayIndex = topDisplayIndex
+
+
 # variables
 mainMenu = []
+settingsMenu = []
 currentIndex = 0
-topDisplayIndex = 0 #When the menu is greater then 2 options 
+topDisplayIndex = 0 #When the menu is greater then 2 options
+
+currentMenu = mainMenu
 
 
 # functions
-def display_menu():
+def display_menu():# use lcd.write_string instead of lcd.write
     # lcd.clear
     # lcd.write(0,0, mainMenu[topDisplayIndex].name)
     # lcd.write(0,0, mainMenu[topDisplayIndex+1].name)
-    arrowTail = "   |\n"
-    arrowHead = "   v\n"
+    # arrowTail = "   |\n"
+    # arrowHead = "   v\n"
 
-    if(topDisplayIndex+1 == len(mainMenu)-1):
-        arrowTail = "\n"
-        arrowHead = "\n"
+    # if(topDisplayIndex+1 == len(mainMenu)-1):
+    #     arrowTail = "\n"
+    #     arrowHead = "\n"
 
     if (currentIndex == topDisplayIndex):
-        print(f"-> {topDisplayIndex+1}. " + mainMenu[topDisplayIndex].name, end=arrowTail)
-        print(f"   {topDisplayIndex+2}. " + mainMenu[topDisplayIndex+1].name, end=arrowHead)
+        print(f"-> {topDisplayIndex+1}. " + currentMenu[topDisplayIndex].name)
+        print(f"   {topDisplayIndex+2}. " + currentMenu[topDisplayIndex+1].name)
     
     else:
-        print(f"   {topDisplayIndex+1}. " + mainMenu[topDisplayIndex].name, end=arrowTail)
-        print(f"-> {topDisplayIndex+2}. " + mainMenu[topDisplayIndex+1].name, end=arrowHead)
+        print(f"   {topDisplayIndex+1}. " + currentMenu[topDisplayIndex].name)
+        print(f"-> {topDisplayIndex+2}. " + currentMenu[topDisplayIndex+1].name)
 
 
 # add to menu
@@ -67,11 +80,11 @@ while True:
     print("-----------------------\n\n\n")
     display_menu()
     toggle = input()
-    while(toggle != "w" and toggle != "s"):
+    while(toggle != "w" and toggle != "s" and toggle != "d"):
         toggle = input()
 
     
-    if(toggle == "s" and currentIndex+1 < len(mainMenu)):
+    if(toggle == "s" and currentIndex+1 < len(currentMenu)):
         currentIndex += 1
         if(currentIndex > topDisplayIndex + 1):
             topDisplayIndex += 1
@@ -83,6 +96,8 @@ while True:
         
         if(currentIndex <= topDisplayIndex - 1):
             topDisplayIndex -= 1
+    elif(toggle == "d"):
+        currentMenu[currentIndex].action()
             
     
     

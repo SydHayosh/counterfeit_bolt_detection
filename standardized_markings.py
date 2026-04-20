@@ -1,7 +1,7 @@
 import numpy as np
 import cv2 as cv
 
-img = cv.imread('Photos/counterfeit_bolt_black.jpg')
+img = cv.imread('Photos/ideal_bolt_light_test.png')
 imgCT = cv.imread('Photos/counterfeit_bolt_titanium.jpg')
 imgCB = cv.imread('Photos/counterfeit_bolt_black.jpg')
 
@@ -56,9 +56,8 @@ cv.imwrite('Photos/output/Gray Counterfeit Black.jpg', grayCB)
 # cv.imwrite("Photos/output/detected circles.jpg",cimg)
 
 canny = cv.Canny(gray, lowerThresh, upperThresh)
-canny = cv.dilate(canny, None, iterations=1)
-#canny = cv.erode(canny, None, iterations=1)
 #canny = cv.dilate(canny, None, iterations=1)
+#canny = cv.erode(canny, None, iterations=1)
 cv.imshow('Canny Edges', canny)
 cv.imwrite("Photos/output/Canny Edges.jpg", canny)
 
@@ -84,11 +83,11 @@ idealBoltPhoto = img.copy()
 for i, contour in enumerate(contours):
     area = cv.contourArea(contour)
 
-    if area > 400:
+    if area > 50:
         if hierarchies[i][3] == -1:
             # outer contour
             cv.drawContours(idealBoltPhoto, contours, i, (0,255,0), 3)
-        elif area < 1500:
+        else: #elif area < 1500:
             # inner contour
             markings.append(contour)
             cv.drawContours(idealBoltPhoto, contours, i, (0,0,255), 3)
