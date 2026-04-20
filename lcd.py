@@ -1,17 +1,13 @@
 import numpy as np
-#import RPi.GPIO as GPIO
 
-#button pins
-up = 10
-down = 11
-select = 12
+def updateMenu(newMenu):
+    global currentMenu, currentIndex, topDisplayIndex
+    currentMenu = newMenu
+    currentIndex = 0
+    topDisplayIndex = 0
 
-# def setup():
-#     GPIO.setmode(GPIO.BOARD)
-#     GPIO.setup(up, GPIO.IN)
-#     GPIO.setup(down, GPIO.IN)
-#     GPIO.setup(select, GPIO.IN)
 
+# Main menu options
 def startTest():
     print("Begin Test selected")
 
@@ -20,12 +16,49 @@ def exportData():
 
 def settings():
     print("Settings selected")
-    currentMenu = settingsMenu
-    currentIndex = 0
-    topDisplayIndex = 0
+    updateMenu(settingsMenu)
 
-def debugMenu():
+def debugSubmenu():
     print("Debug Menu selected")
+    updateMenu(debugMenu)
+
+
+# Settings menu options
+def idealBolt():
+    print("Ideal Bolt selected")
+
+def advSettings():
+    print("Advanced Settings selected")
+    updateMenu(advSettingsMenu)
+
+
+# Advanced settings menu options
+def magCriteria():
+    print("Magnetic criteriat selected")
+
+def magTestDuration():
+    print("Mag Test Duration selected")
+
+def changeBolt():
+    print("Change Bolt-type selected")
+
+def update():
+    print("Update selected")
+
+
+# Debug menu options
+def pinCheck():
+    print("Check Connections selected")
+
+def cameraTest():
+    print("Camera Test selected")
+
+def magCalibration():
+    print("Magnetics Calibration selected")
+
+def ledTest():
+    print("LED Test selected")
+    
 
 class MenuOption:
     def __init__(self, name, action = None):
@@ -43,6 +76,8 @@ class MenuOption:
 # variables
 mainMenu = []
 settingsMenu = []
+advSettingsMenu = []
+debugMenu = []
 currentIndex = 0
 topDisplayIndex = 0 #When the menu is greater then 2 options
 
@@ -51,16 +86,6 @@ currentMenu = mainMenu
 
 # functions
 def display_menu():# use lcd.write_string instead of lcd.write
-    # lcd.clear
-    # lcd.write(0,0, mainMenu[topDisplayIndex].name)
-    # lcd.write(0,0, mainMenu[topDisplayIndex+1].name)
-    # arrowTail = "   |\n"
-    # arrowHead = "   v\n"
-
-    # if(topDisplayIndex+1 == len(mainMenu)-1):
-    #     arrowTail = "\n"
-    #     arrowHead = "\n"
-
     if (currentIndex == topDisplayIndex):
         print(f"-> {topDisplayIndex+1}. " + currentMenu[topDisplayIndex].name)
         print(f"   {topDisplayIndex+2}. " + currentMenu[topDisplayIndex+1].name)
@@ -70,17 +95,32 @@ def display_menu():# use lcd.write_string instead of lcd.write
         print(f"-> {topDisplayIndex+2}. " + currentMenu[topDisplayIndex+1].name)
 
 
-# add to menu
+# Populates menu and submenus
 mainMenu.append(MenuOption("Begin Test", startTest))
 mainMenu.append(MenuOption("Data Export", exportData))
 mainMenu.append(MenuOption("Settings", settings))
-mainMenu.append(MenuOption("Debug Menu", debugMenu))
+mainMenu.append(MenuOption("Debug Menu", debugSubmenu))
+
+settingsMenu.append(MenuOption("Ideal Bolt", idealBolt))
+settingsMenu.append(MenuOption("Advanced Settings", advSettings))
+
+advSettingsMenu.append(MenuOption("Magnetic criteria", magCriteria))
+advSettingsMenu.append(MenuOption("Mag Test Duration", magTestDuration))
+advSettingsMenu.append(MenuOption("Change Bolt-type", changeBolt))
+advSettingsMenu.append(MenuOption("Update", update))
+
+debugMenu.append(MenuOption("Check Connections", pinCheck))
+debugMenu.append(MenuOption("Camera Test", cameraTest))
+debugMenu.append(MenuOption("Magnetics Calibration", magCalibration))
+debugMenu.append(MenuOption("LED Test", ledTest))
+
+
 
 while True:
     print("-----------------------\n\n\n")
     display_menu()
     toggle = input()
-    while(toggle != "w" and toggle != "s" and toggle != "d"):
+    while(toggle != "w" and toggle != "s" and toggle != "d" and toggle != "a"):
         toggle = input()
 
     
@@ -98,6 +138,8 @@ while True:
             topDisplayIndex -= 1
     elif(toggle == "d"):
         currentMenu[currentIndex].action()
-            
+
+    elif(toggle == "a"):
+        updateMenu(mainMenu)
     
     
