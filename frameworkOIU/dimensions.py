@@ -9,16 +9,26 @@ import cv2 as cv
 def midpoint(ptA, ptB):
     return ((ptA[0] + ptB[0]) * 0.5, (ptA[1] + ptB[1]) * 0.5)
 
+lowerThresh = 50
+upperThresh = 175
+
+image = cv.imread('Photos/ideal_bolt_light_test.png')
+
+if image is None:
+    print("Image failed to load")
+    exit()
 ap = argparse.ArgumentParser()
 ap.add_argument("-i", "--image", required=True, help="path to the input image")
 ap.add_argument("-w", "--width", type=float, required=True, help="width of the left-most object in the image (in inches)")
 args = vars(ap.parse_args())
 
+# Image preprocessing
 image = cv.imread(args["image"])
 gray = cv.cvtColor(image, cv.COLOR_BGR2GRAY)
 gray = cv.GaussianBlur(gray, (7, 7), 0)
 
-edged = cv.Canny(gray, 50, 100)
+# Refines contours
+edged = cv.Canny(gray, lowerThresh, upperThresh)
 edged = cv.dilate(edged, None, iterations=1)
 edged = cv.erode(edged, None, iterations=1)
 
