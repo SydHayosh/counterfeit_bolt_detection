@@ -2,6 +2,8 @@ echo "Checking onchipCBDS branch for updates..."
 cd
 cd CBDS
 
+chmod -R 777 .
+
 git clone -b onchipCBDS https://github.com/SydHayosh/counterfeit_bolt_detection.git
 echo "Checking libraries for updates..."
 

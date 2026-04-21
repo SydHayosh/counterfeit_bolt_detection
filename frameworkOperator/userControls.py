@@ -1,5 +1,5 @@
 from frameworkMagnetics.hallReader import setup_read_dataset, mag_test
-from frameworkMagnetics.cameras import capture_photos
+#from frameworkOIU.cameras import capture_photos
 from RPLCD.i2c import CharLCD
 import time
 import board
