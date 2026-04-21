@@ -91,6 +91,7 @@ def magCalibration():
 
 def ledTest():
     print("LED Test selected")
+    lcd.clear()
     lcd.cursor_pos = (0,0)#(row, col)
     lcd.write_string("Cycling LEDs...")
     ledCheck()
