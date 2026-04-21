@@ -60,7 +60,6 @@ def setup_read_dataset():
     for d in data:
         idealBolt.add_sample(d)
 
-    idealBolt.set_range(num_std)
 
 testSample = 10.15 
 
