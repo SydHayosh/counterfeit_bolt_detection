@@ -1,4 +1,5 @@
 from frameworkMagnetics.hallReader import setup_read_dataset, mag_test
+from ledTest import ledCheck
 #from frameworkOIU.cameras import capture_photos
 from RPLCD.i2c import CharLCD
 import time
@@ -41,7 +42,7 @@ def updateMenu(newMenu):
 def startTest():
     print("Begin Test selected")
     mag_test(10.15) #test value hallReader.py should get this value on its own
-    capture_photos()
+    #capture_photos()
 
 def exportData():
     print("Data Export selected")
@@ -90,6 +91,7 @@ def magCalibration():
 
 def ledTest():
     print("LED Test selected")
+    ledCheck()
 
 # class containing the menu option name and action that it preforms
 class MenuOption:
