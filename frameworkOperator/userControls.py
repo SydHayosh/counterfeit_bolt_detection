@@ -91,6 +91,8 @@ def magCalibration():
 
 def ledTest():
     print("LED Test selected")
+    lcd.cursor_pos = (0,0)#(row, col)
+    lcd.write_string("Cycling LEDs...")
     ledCheck()
 
 # class containing the menu option name and action that it preforms

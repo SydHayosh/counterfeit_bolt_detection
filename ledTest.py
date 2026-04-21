@@ -21,7 +21,7 @@ def set_all(color):
 
 def ledCheck():
     try:
-        for i in range(10):
+        for i in range(3):
             print("Red")
             set_all((255, 0, 0))
             time.sleep(1)
