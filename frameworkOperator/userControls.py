@@ -1,4 +1,4 @@
-from frameworkMagnetics.hallReader import setup_read_dataset, mag_test
+from frameworkMagnetics.magCheck import setup_read_dataset, mag_test
 from ledTest import ledCheck
 #from frameworkOIU.cameras import capture_photos
 from RPLCD.i2c import CharLCD
@@ -61,19 +61,19 @@ def idealBolt():
     print("Ideal Bolt selected")
 
 def advSettings():
-    print("Advanced Settings selected")
+    print("Adv Settings selected")
     updateMenu(advSettingsMenu)
 
 
 # Advanced settings menu options
 def magCriteria():
-    print("Magnetic criteriat selected")
+    print("Mag criteria selected")
 
 def magTestDuration():
     print("Mag Test Duration selected")
 
 def changeBolt():
-    print("Change Bolt-type selected")
+    print("Bolt-type selected")
 
 def update():
     print("Update selected")
@@ -87,7 +87,7 @@ def cameraTest():
     print("Camera Test selected")
 
 def magCalibration():
-    print("Magnetics Calibration selected")
+    print("Mag Calibration selected")
 
 def ledTest():
     print("LED Test selected")
@@ -157,16 +157,16 @@ mainMenu.append(MenuOption("Settings", settings))
 mainMenu.append(MenuOption("Debug Menu", debugSubmenu))
 
 settingsMenu.append(MenuOption("Ideal Bolt", idealBolt))
-settingsMenu.append(MenuOption("Advanced Settings", advSettings))
+settingsMenu.append(MenuOption("Adv Settings", advSettings))
 
-advSettingsMenu.append(MenuOption("Magnetic criteria", magCriteria))
+advSettingsMenu.append(MenuOption("Mag criteria", magCriteria))
 advSettingsMenu.append(MenuOption("Mag Test Duration", magTestDuration))
-advSettingsMenu.append(MenuOption("Change Bolt-type", changeBolt))
+advSettingsMenu.append(MenuOption("Bolt-type", changeBolt))
 advSettingsMenu.append(MenuOption("Update", update))
 
 debugMenu.append(MenuOption("Check Connections", pinCheck))
 debugMenu.append(MenuOption("Camera Test", cameraTest))
-debugMenu.append(MenuOption("Magnetics Calibration", magCalibration))
+debugMenu.append(MenuOption("Mag Calibration", magCalibration))
 debugMenu.append(MenuOption("LED Test", ledTest))
 
 

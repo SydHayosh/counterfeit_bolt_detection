@@ -1,10 +1,9 @@
 import numpy as np
 #import pandas as pd
 
-#TODO see if there is a way to only read in a sample once
-
 class Bolt:
     numBoltTypes = 0
+    # x, y, z
     def __init__(self, ideal = False):
         Bolt.numBoltTypes += 1
         self.name = "Sample type " + str(Bolt.numBoltTypes)
@@ -52,7 +51,7 @@ acceptedNumOfStdDev = 3
 idealBolt = None
 
 #setup_read_dataset(file_path, column_name, num_std=acceptedNumOfStdDev)
-def setup_read_dataset(num_std=acceptedNumOfStdDev):
+def setup_read_dataset():
     # Example dataset (replace with Excel later)
     global idealBolt
     idealBolt = Bolt(ideal=True)
@@ -65,6 +64,7 @@ def setup_read_dataset(num_std=acceptedNumOfStdDev):
 
 testSample = 10.15 
 
+#z first x then y
 def mag_test(test_value):
     if idealBolt.in_range(test_value):
         print("Magnetic test passed")
