@@ -6,6 +6,7 @@ import adafruit_tmag5273 as maglib
 
 import numpy as np
 import pandas as pd 
+from pins import UP, DWN, L, R, MID, inputPins, inputNames
 
 def quickMean(vec):
     length = len(vec)
@@ -19,15 +20,6 @@ def quickMean(vec):
 
     return mean
 i2c = board.I2C()  # uses board.SCL and board.SDA
-
-UP = digitalio.DigitalInOut(board.D6)#5
-DWN = digitalio.DigitalInOut(board.D5)#6
-L = digitalio.DigitalInOut(board.D13)#12
-R = digitalio.DigitalInOut(board.D12)#13
-MID = digitalio.DigitalInOut(board.D19)#19
-
-inputPins = [UP, DWN, L, R, MID]
-inputNames = ['UP', 'DWN', 'L', 'R', 'MID']
 
 testX = []
 testY = []
@@ -46,16 +38,16 @@ entryC = []
 #Sensors output milliTeslas. No gain (Gain = 1)
 
 #Makes sure chip isnt busy
-while not i2c.try_lock():
-    pass
-try:
-    i2c.writeto(0x18, bytes([0x80])) #EX (reset) command
-    time.sleep(0.1)
-finally:
+# while not i2c.try_lock():
+    # pass
+# try:
+    # i2c.writeto(0x18, bytes([0x80])) #EX (reset) command
+    # time.sleep(0.1)
+# finally:
     i2c.unlock() 
     
 try: 
-    sensor = maglib.TMAG5273(0x18)
+    sensor = maglib.TMAG5273(i2c)
 except ValueError:
     sensor = maglib.TMAG5273(i2c, address=0x18)
     
