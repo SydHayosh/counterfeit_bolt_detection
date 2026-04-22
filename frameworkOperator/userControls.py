@@ -6,7 +6,7 @@ import time
 import board
 import digitalio
 import numpy as np
-from pins import UP, DWN, L, R, MID, inputPins, inputNames
+from .pins import UP, DWN, L, R, MID, inputPins, inputNames
 
 lcd = CharLCD(
     i2c_expander='PCF8574',

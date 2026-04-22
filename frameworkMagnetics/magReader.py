@@ -6,7 +6,7 @@ import adafruit_tmag5273 as maglib
 
 import numpy as np
 import pandas as pd 
-from pins import UP, DWN, L, R, MID, inputPins, inputNames
+from frameworkOperator.pins import UP, DWN, L, R, MID, inputPins, inputNames
 
 def quickMean(vec):
     length = len(vec)
