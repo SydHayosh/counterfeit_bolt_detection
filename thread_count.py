@@ -5,7 +5,7 @@ import numpy as np
 import imutils
 import cv2 as cv
 
-img = cv.imread('Photos/CBDS_Pics/idealSide.jpg')
+img = cv.imread('Photos/CBDS_Pics/oxideSide.jpg')
 
 if img is None:
     print("Image failed to load")
@@ -33,8 +33,8 @@ y2 = 1400
 # y1 = 1480
 # y2 = 1500
 
-lowerThresh = 50
-upperThresh = 30
+lowerThresh = 10 # ideal(50), oxide(10)
+upperThresh = 30 # 
 
 print(img.shape)
 roi = img[y1:y2, x1:x2] #Region of Interest image[y1:y2, x1:x2]
@@ -43,17 +43,9 @@ roi = img[y1:y2, x1:x2] #Region of Interest image[y1:y2, x1:x2]
 gray = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
 gray = cv.GaussianBlur(gray, (7, 7), 0)
 
-# edged = cv.Canny(gray, 50, 100)
-# edged = cv.dilate(edged, None, iterations=6)
-# edged = cv.erode(edged, None, iterations=1)
-
-# cnts = cv.findContours(edged.copy(), cv.RETR_EXTERNAL, cv.CHAIN_APPROX_SIMPLE)
-
 preview = img.copy()
 cv.rectangle(preview, (x1,y1),(x2,y2), (0,255,0), 5) #(x1,y1),(x2,y2) measured from the top left
 cv.imshow("ROI Location", preview)
-
-
 
 #cv.imshow('Gray', gray)
 cv.imwrite("Photos/output/Gray.jpg", gray)
@@ -63,7 +55,7 @@ canny[y1:y2, x1:x2] = cv.Canny(gray.copy()[y1:y2, x1:x2], lowerThresh, lowerThre
 cv.imshow('Canny Edges', canny)
 cv.imwrite("Photos/output/Canny Edges Shaft.jpg", canny)
 
-canny = cv.dilate(canny, None, iterations=5)
+canny = cv.dilate(canny, None, iterations=3) # ideal(5), oxide(3)
 canny = cv.erode(canny, None, iterations=1)
 
 
@@ -80,7 +72,7 @@ threads = []
 for contour in contours:
     area = cv.contourArea(contour)
 
-    if 500 < area :
+    if 800 < area : # ideal(500), oxide(800)
         print(area)
         threads.append(contour)
         cv.drawContours(idealBoltPhoto, [contour], -1, (0, 255, 0), 2)
