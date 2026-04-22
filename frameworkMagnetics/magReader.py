@@ -44,7 +44,7 @@ entryC = []
     # i2c.writeto(0x18, bytes([0x80])) #EX (reset) command
     # time.sleep(0.1)
 # finally:
-    i2c.unlock() 
+#    i2c.unlock() 
     
 try: 
     sensor = maglib.TMAG5273(i2c)
@@ -148,8 +148,8 @@ while R.value:
     time.sleep(0.1)
     
     # Display the status field if an error occured, etc.
-    if sensor.last_status > maglib.STATUS_OK:
-        sensor.display_status()
+#    if sensor.last_status > maglib.STATUS_OK:
+#        sensor.display_status()
 print("\n\n\n\n===================")
 boltName = input("Bolt Name: ")
 print("Generating Excel File...")
