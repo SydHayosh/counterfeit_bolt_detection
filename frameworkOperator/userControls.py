@@ -6,21 +6,7 @@ import time
 import board
 import digitalio
 import numpy as np
-
-# Sets direction to pins
-UP = digitalio.DigitalInOut(board.D6)#5
-DWN = digitalio.DigitalInOut(board.D5)#6
-L = digitalio.DigitalInOut(board.D13)#12
-R = digitalio.DigitalInOut(board.D12)#13
-MID = digitalio.DigitalInOut(board.D19)#19
-
-inputPins = [UP, DWN, L, R, MID]
-inputNames = ['UP', 'DWN', 'L', 'R', 'MID']
-
-# Sets the pins default state and type
-for pin in inputPins:
-    pin.direction = digitalio.Direction.INPUT
-    pin.pull = digitalio.Pull.UP
+from pins import UP, DWN, L, R, MID, inputPins, inputNames
 
 lcd = CharLCD(
     i2c_expander='PCF8574',

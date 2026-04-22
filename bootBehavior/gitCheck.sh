@@ -1,4 +1,4 @@
-echo "Checking onchipCBDS branch for updates..."
+echo "Checking for updates..."
 cd
 cd CBDS
 
