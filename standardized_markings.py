@@ -1,7 +1,7 @@
 import numpy as np
 import cv2 as cv
 
-img = cv.imread('Photos/CBDS_Pics/ideal-pos20.jpg')
+img = cv.imread('Photos/CBDS_Pics/ideal-pos20.jpg') # 18 seems to be in more focus
 
 # ROI parameters
 center = (2205,1635) # true center is (2304,1296)
@@ -16,7 +16,9 @@ if img is None:
 
 
 gray = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
-#gray = cv.GaussianBlur(gray, (7, 7), 0)
+gray=cv.bitwise_not(gray)
+cv.imshow('image1.jpg',gray)
+#gray = cv.GaussianBlur(gray, (3, 3), 0)
 
 #cv.imshow('Ideal Bolt', img)
 #cv.imwrite("Photos/output/Ideal Bolt.jpg", img)
@@ -54,7 +56,7 @@ markings = []
 for contour in contours:
     area = cv.contourArea(contour)
 
-    if 120 < area < 130 or 107 < area < 109:
+    if 100 < area:
         print(area)
         markings.append(contour)
         cv.drawContours(idealBoltPhoto, [contour], -1, (0, 255, 0), 10)
