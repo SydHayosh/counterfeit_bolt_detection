@@ -1,5 +1,5 @@
 from frameworkMagnetics.magCheck import setup_read_dataset, mag_test
-from ledTest import ledCheck, ledWhite, ledRed, ledGreen
+from ledTest import ledCheck, ledWhite, ledRed, ledGreen, setStrip
 from frameworkOIU.cameras import capture_photos
 from RPLCD.i2c import CharLCD
 import time
@@ -28,10 +28,10 @@ def updateMenu(newMenu):
 def startTest():
     print("Begin Test selected")
     if mag_test(10.15): #test value hallReader.py should get this value on its own
-        ledGreen()
+        setStrip(3, (0, 255, 0))
         time.sleep(1)
     else:
-        ledRed()
+        setStrip(3, (255, 0, 0))
         time.sleep(1)
     ledWhite()
     #capture_photos()
