@@ -1,5 +1,5 @@
 from frameworkMagnetics.magCheck import setup_read_dataset, mag_test
-from ledTest import ledCheck
+from ledTest import ledCheck, ledWhite, ledRed, ledGreen
 from frameworkOIU.cameras import capture_photos
 from RPLCD.i2c import CharLCD
 import time
@@ -27,7 +27,13 @@ def updateMenu(newMenu):
 # Main menu options
 def startTest():
     print("Begin Test selected")
-    mag_test(10.15) #test value hallReader.py should get this value on its own
+    if mag_test(10.15): #test value hallReader.py should get this value on its own
+        ledGreen()
+        time.sleep(1)
+    else:
+        ledRed()
+        time.sleep()
+    ledWhite()
     capture_photos()
 
 def exportData():
@@ -161,6 +167,7 @@ lastState = [True] * len(inputPins)
 # Reads the ideal bolt magnetic dataset
 setup_read_dataset()
 
+ledWhite()
 display_menu()
 
 while True:
