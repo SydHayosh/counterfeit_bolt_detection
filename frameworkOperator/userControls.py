@@ -32,9 +32,9 @@ def startTest():
         time.sleep(1)
     else:
         ledRed()
-        time.sleep()
+        time.sleep(1)
     ledWhite()
-    capture_photos()
+    #capture_photos()
 
 def exportData():
     print("Data Export selected")
