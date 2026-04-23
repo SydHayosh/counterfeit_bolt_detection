@@ -1,6 +1,6 @@
 from frameworkMagnetics.magCheck import setup_read_dataset, mag_test
 from ledTest import ledCheck
-#from frameworkOIU.cameras import capture_photos
+from frameworkOIU.cameras import capture_photos
 from RPLCD.i2c import CharLCD
 import time
 import board
@@ -28,7 +28,7 @@ def updateMenu(newMenu):
 def startTest():
     print("Begin Test selected")
     mag_test(10.15) #test value hallReader.py should get this value on its own
-    #capture_photos()
+    capture_photos()
 
 def exportData():
     print("Data Export selected")
