@@ -2,13 +2,13 @@ import subprocess
 
 def capture_photos():
     subprocess.run([
-        "libcamera-still",
+        "rpicam-still",
         "--camera", "0",
         "-o", "frameworksOIU/inputCV/bolt_head.jpg"
     ])
 
     subprocess.run([
-        "libcamera-still",
+        "rpicam-still",
         "--camera", "1",
         "-o", "frameworksOIU/inputCV/bolt_shaft.jpg"
     ])
