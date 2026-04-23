@@ -34,7 +34,7 @@ def startTest():
         setStrip(3, (255, 0, 0))
         time.sleep(1)
     ledWhite()
-    #capture_photos()
+    capture_photos()
 
 def exportData():
     print("Data Export selected")
