@@ -5,7 +5,7 @@ import numpy as np
 import imutils
 import cv2 as cv
 
-img = cv.imread('Photos/CBDS_Pics/oxideSide.jpg')
+img = cv.imread('Photos/bolt_shaft black.jpg')
 
 if img is None:
     print("Image failed to load")
