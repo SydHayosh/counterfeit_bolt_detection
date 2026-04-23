@@ -5,7 +5,7 @@ import digitalio
 import adafruit_tmag5273 as maglib
 
 import numpy as np
-import pandas as pd 
+import csv
 from frameworkOperator.pins import UP, DWN, L, R, MID, inputPins, inputNames
 
 def quickMean(vec):
@@ -26,44 +26,23 @@ testY = []
 testZ = []
 testC = []
 
-entryX = []
-entryY = []
-entryZ = []
-entryC = []
-
-# for pin in inputPins:
-    # pin.direction = digitalio.Direction.INPUT
-    # pin.pull = digitalio.Pull.UP
-
-#Sensors output milliTeslas. No gain (Gain = 1)
-
-#Makes sure chip isnt busy
-# while not i2c.try_lock():
-    # pass
-# try:
-    # i2c.writeto(0x18, bytes([0x80])) #EX (reset) command
-    # time.sleep(0.1)
-# finally:
-#    i2c.unlock() 
     
 try: 
     sensor = maglib.TMAG5273(i2c)
 except ValueError:
     sensor = maglib.TMAG5273(i2c, address=0x18)
     
-print("Press MID to record ambient.")
-
-while MID.value:
-    time.sleep(0)
+print("Getting Ambient...")
 
 print('\n')
-time.sleep(0.5)
 
-while MID.value:
+timeInit = time.monotonic()
+
+while (time.monotonic() < timeInit + 5):
     x, y, z = sensor.magnetic
     temp = sensor.temperature
     
-    displayOut = [f'Recording... (Press MID stop recording)',
+    displayOut = [f'Recording... 					',
     f'X:    {x:.2f} μT',
     f'Y:    {y:.2f} μT',
     f'Z:    {z:.2f} μT',
@@ -78,20 +57,20 @@ while MID.value:
     testZ.append(z)
     testC.append(temp)
 
-entryX.append(quickMean(testX))
-entryY.append(quickMean(testY))
-entryZ.append(quickMean(testZ))
-entryC.append(quickMean(testZ))
+ambX = quickMean(testX)
+ambY = quickMean(testY)
+ambZ = quickMean(testZ)
+ambC = quickMean(testC)
 
-entryX.append('')
-entryY.append('')
-entryZ.append('')
-entryC.append('')
+testX = []
+testY = []
+testZ = []
+testC = []
 
 time.sleep(0.5)
 
-displayOut = ['Press MID to record bolt data.          ',
-'Push R to end and output to .xlsx.',
+displayOut = ['Insert bolt, then press MID.          ',
+'					',
 '                   ',
 '                   ',]
 
@@ -99,70 +78,44 @@ print('\n'.join(displayOut), flush=True)
 print(f'\033[{len(displayOut)}A', end='', flush=True)
 
 print('\n\n')
+
+while MID.value:
+	time.sleep(0.1)
+
 timeInit = time.monotonic()
 
-while R.value:
+while (time.monotonic() < timeInit + 5):
     
-    x, y, z = sensor.magnetic
-    temp = sensor.temperature
-    
-    displayOut = [f'Insert sample...                         ',
-    f'Runtime: {time.monotonic() - timeInit:.3f}s',
-    f'X:    {x:.3f} μT',
-    f'Y:    {y:.3f} μT',
-    f'Z:    {z:.3f} μT',
-    f'Temp: {temp:.2f} °C',
-    ]
+	x, y, z = sensor.magnetic
+	temp = sensor.temperature
+	
+	displayOut = [f'Insert sample...                         ',
+	f'Runtime: {time.monotonic() - timeInit:.3f}s',
+	f'X:    {x:.3f} μT',
+	f'Y:    {y:.3f} μT',
+	f'Z:    {z:.3f} μT',
+	f'Temp: {temp:.3f} °C',
+	]
+	
+	print('\n'.join(displayOut), flush=True)
+	print(f'\033[{len(displayOut)}A', end='', flush=True)
+	
+	testX.append(x)
+	testY.append(y)
+	testZ.append(z)
+	testC.append(temp)
+	
+	sampleX = quickMean(testX) - ambX
+	sampleY = quickMean(testY) - ambY
+	sampleZ = quickMean(testZ) - ambZ
+	sampleC = quickMean(testC)
 
-    print('\n'.join(displayOut), flush=True)
-    print(f'\033[{len(displayOut)}A', end='', flush=True)
+sampleTrial = [sampleX, sampleY, sampleZ]
 
-    if not MID.value:
-        time.sleep(0.5)
-                
-        while MID.value:
-            x, y, z = sensor.magnetic
-            temp = sensor.temperature
-            
-            displayOut = [f'Recording... (Press MID stop recording)',
-            f'Runtime: {time.monotonic() - timeInit:.3f}s',
-            f'X:    {x:.3f} μT',
-            f'Y:    {y:.3f} μT',
-            f'Z:    {z:.3f} μT',
-			f'Temp: {temp:.2f} °C',
-            ]
-            
-            print('\n'.join(displayOut), flush=True)
-            print(f'\033[{len(displayOut)}A', end='', flush=True)
-            
-            testX.append(x)
-            testY.append(y)
-            testZ.append(z)
-            testC.append(temp)
-        
-        entryX.append(quickMean(testX))
-        entryY.append(quickMean(testY))
-        entryZ.append(quickMean(testZ))
-        entryC.append(quickMean(testC))
-    
-    time.sleep(0.1)
-    
-    # Display the status field if an error occured, etc.
-#    if sensor.last_status > maglib.STATUS_OK:
-#        sensor.display_status()
-print("\n\n\n\n===================")
-boltName = input("Bolt Name: ")
-print("Generating Excel File...")
+print("Writing to sample.csv")
 
-df = pd.DataFrame({
-    'X Output (μT)': entryX,
-    'Y Output (μT)': entryY,
-    'Z Output (μT)': entryZ,
-    'Temperature (°C)': entryC
-})
+with open('sample.csv', 'w') as csvfile:
+	csv_writer = csv.writer(csvfile)
+	csv_writer.writerow(sampleTrial)
 
-timestamp = time.strftime('%Y%m%d_%H_%M_%S', time.localtime())
-df.to_excel(format(boltName) + "_" + timestamp + '.xlsx', index=False, sheet_name='Magnetometer Readings')
-
-print( format(boltName) + " Dataset created.")
-
+print("Data written to sample.csv")
