@@ -1,7 +1,7 @@
 import numpy as np
 import cv2 as cv
 
-img = cv.imread('Photos/bolt_head ideal.jpg') # 18 seems to be in more focus
+img = cv.imread('Photos/bolt_head black.jpg') # 18 seems to be in more focus
 
 # ROI parameters
 center = (2205,1635) # true center is (2304,1296)
