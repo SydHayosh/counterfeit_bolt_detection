@@ -28,6 +28,15 @@ def ledRed():
 def ledGreen():
     set_all((0, 255, 0))
 
+def setStrip(strip_num, color):
+    leds_per_strip = 8
+    start = strip_num * leds_per_strip
+    end = start + leds_per_strip
+
+    for i in range(start, end):
+        pixels[i] = color
+    pixels.show()
+
 def ledCheck():
     try:
         for i in range(3):
