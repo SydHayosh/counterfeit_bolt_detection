@@ -20,13 +20,13 @@ def set_all(color):
     pixels.show()
     
 def ledWhite():
-    set_all((255, 255, 255)
+    set_all((255, 255, 255))
 
 def ledRed():
-    set_all((255, 0, 0)
+    set_all((255, 0, 0))
 
 def ledGreen():
-    set_all((0, 255, 0)
+    set_all((0, 255, 0))
 
 def ledCheck():
     try:
