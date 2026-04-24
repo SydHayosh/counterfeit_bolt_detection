@@ -11,3 +11,7 @@ inputNames = ['UP', 'DWN', 'L', 'R', 'MID']
 for pin in inputPins:
     pin.direction = digitalio.Direction.INPUT
     pin.pull = digitalio.Pull.UP
+
+def debounce(pin):
+    while not pin.value:
+        pass
