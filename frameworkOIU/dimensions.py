@@ -1,39 +1,104 @@
-from scipy.spatial import distance as dist
-from imutils import perspective
 from imutils import contours
-import numpy as np
-import argparse
-import imutils
 import cv2 as cv
 
-def midpoint(ptA, ptB):
-    return ((ptA[0] + ptB[0]) * 0.5, (ptA[1] + ptB[1]) * 0.5)
+img = cv.imread('Photos/bolt_shaft ideal.jpg')
 
-lowerThresh = 50
-upperThresh = 175
-
-image = cv.imread('Photos/ideal_bolt_light_test.png')
-
-if image is None:
+if img is None:
     print("Image failed to load")
     exit()
-ap = argparse.ArgumentParser()
-ap.add_argument("-i", "--image", required=True, help="path to the input image")
-ap.add_argument("-w", "--width", type=float, required=True, help="width of the left-most object in the image (in inches)")
-args = vars(ap.parse_args())
 
-# Image preprocessing
-image = cv.imread(args["image"])
-gray = cv.cvtColor(image, cv.COLOR_BGR2GRAY)
+img_gray=cv.cvtColor(img, cv.COLOR_BGR2GRAY)
+inv_img=cv.bitwise_not(img_gray)
+cv.imshow('image1.jpg',inv_img)
+
+# focuses on the upper edge
+x1 = 2200
+x2 = 2900
+y1 = 1240 #1240
+y2 = 1255 #1255
+
+lowerThresh = 50 # ideal(50), oxide(10)
+upperThresh = 30 # 
+
+print(img.shape)
+roi = img[y1:y2, x1:x2] #Region of Interest image[y1:y2, x1:x2]
+#cv.imshow('ROI', roi)
+
+gray = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
 gray = cv.GaussianBlur(gray, (7, 7), 0)
 
-# Refines contours
-edged = cv.Canny(gray, lowerThresh, upperThresh)
-edged = cv.dilate(edged, None, iterations=1)
-edged = cv.erode(edged, None, iterations=1)
+preview = img.copy()
+cv.rectangle(preview, (x1,y1),(x2,y2), (0,255,0), 5) #(x1,y1),(x2,y2) measured from the top left
+cv.imshow("ROI Location", preview)
 
-cnts = cv.findContours(edged.copy(), cv.RETR_EXTERNAL, cv.CHAIN_APPROX_SIMPLE)
-cnts = imutils.grab_contours(cnts)
+canny = gray.copy()*0
+canny[y1:y2, x1:x2] = cv.Canny(gray.copy()[y1:y2, x1:x2], lowerThresh, lowerThresh)
+cv.imshow('Canny Edges', canny)
+cv.imwrite("Photos/output/Canny Edges Shaft.jpg", canny)
 
-(cnts, _) = contours.sort_contours(cnts)
-pixelsPerMetric = None
+canny = cv.dilate(canny, None, iterations=6) # ideal(5), oxide(3)
+canny = cv.erode(canny, None, iterations=1)
+
+
+contours, hierarchies = cv.findContours(canny, cv.RETR_LIST, cv.CHAIN_APPROX_NONE)
+
+Contours = img.copy()
+cv.drawContours(Contours, contours, -1, (0,255,0), 2) #cv.drawContours(image being drawn on, contours, which contours to draw? just use -1, color, line thickness)
+cv.imwrite("Photos/output/Contours 50.jpg", Contours)
+cv.imshow('Contours', Contours)
+
+idealBoltPhoto = img.copy()
+upThreads = []
+
+for contour in contours:
+    area = cv.contourArea(contour)
+
+    if 10 < area : # ideal(500), oxide(800)
+        print(area)
+        upThreads.append(contour)
+        cv.drawContours(idealBoltPhoto, [contour], -1, (0, 255, 0), 2)
+
+# focuses on the lower edge
+x1 = 2200
+x2 = 2900
+y1 = 1480
+y2 = 1510
+
+preview = img.copy()
+cv.rectangle(preview, (x1,y1),(x2,y2), (0,255,0), 5) #(x1,y1),(x2,y2) measured from the top left
+cv.imshow("ROI Location", preview)
+
+cannyLow = gray.copy()*0
+cannyLow[y1:y2, x1:x2] = cv.Canny(gray.copy()[y1:y2, x1:x2], lowerThresh, lowerThresh)
+cv.imshow('Canny Edges', cannyLow)
+cv.imwrite("Photos/output/Canny Edges Shaft.jpg", cannyLow)
+
+cannyLow = cv.dilate(cannyLow, None, iterations=6) # ideal(5), oxide(3)
+cannyLow = cv.erode(cannyLow, None, iterations=1)
+
+
+lowContours, hierarchies = cv.findContours(cannyLow, cv.RETR_LIST, cv.CHAIN_APPROX_NONE)
+
+Contours = img.copy()
+cv.drawContours(Contours, lowContours, -1, (0,255,0), 2) #cv.drawContours(image being drawn on, contours, which contours to draw? just use -1, color, line thickness)
+cv.imwrite("Photos/output/Contours 50.jpg", Contours)
+cv.imshow('Contours', Contours)
+
+lowThreads = []
+
+for contour in lowContours:
+    area = cv.contourArea(contour)
+
+    if 10 < area : # ideal(500), oxide(800)
+        print(area)
+        lowThreads.append(contour)
+        cv.drawContours(idealBoltPhoto, [contour], -1, (0, 255, 0), 2)
+            
+#cv.drawContours(idealBoltPhoto, contours, -1, (0,255,0), 10) #cv.drawContours(image being drawn on, contours, which contours to draw? just use -1, color, line thickness)
+cv.imshow('Contours', idealBoltPhoto)
+cv.imwrite("Photos/output/Contours on the Ideal Bolt.jpg", idealBoltPhoto)
+
+print(f'\n There are {len(lowThreads)} threads in the image') # Should be 24 when looking at just the threads
+
+
+cv.waitKey(0)
