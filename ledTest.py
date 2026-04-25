@@ -58,3 +58,5 @@ def ledCheck():
             
     except KeyboardInterrupt:
         set_all((0, 0, 0,))
+
+ledCheck()
