@@ -3,6 +3,7 @@ import board
 import busio
 import digitalio
 import adafruit_mlx90393 as maglib
+import RPi.GPIO as GPIO
 
 import numpy as np
 import pandas as pd 
@@ -50,6 +51,11 @@ def clear_stuck_i2c():
         sda.deinit()
 
 i2c = board.I2C()
+i = 1
+while not i2c.try_lock():
+    print("Unlock Attempts: " + format(i))
+    i += 1
+    pass
 
 testX = []
 testY = []
@@ -206,16 +212,4 @@ timestamp = time.strftime('%Y%m%d_%H_%M_%S', time.localtime())
 df.to_excel("MLX_" + format(boltName) + "_" + timestamp + '.xlsx', index=False, sheet_name='MLX90393 Readings')
 
 print( format(boltName) + " Dataset created.")
-
-
-except KeyboardInterrupt:
-    print("\n Keyboard Interrupt received — cleaning up...")
-
-finally:                                      # ← always runs, even on Ctrl+C
-    try:
-        sensor._i2c.unlock()                  # release the bus lock if held
-    except Exception:
-        pass
-    i2c.deinit()                              # fully release the I2C bus
-    print("I2C bus released.")
 

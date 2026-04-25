@@ -61,6 +61,16 @@ def clear_stuck_i2c():
 
 def init_hardware():
     i2c = board.I2C()
+    
+    # Wait for I2C lock, send exit mode command to ensure sensor is idle
+    while not i2c.try_lock():
+        pass
+    try:
+        i2c.writeto(0x18, bytes([0x80]))  # EXIT mode command
+        time.sleep(0.1)
+    finally:
+        i2c.unlock()
+    
     sensor = maglib.MLX90393(i2c, address=0x18)
     return i2c, sensor
 
