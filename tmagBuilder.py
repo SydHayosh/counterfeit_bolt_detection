@@ -6,7 +6,7 @@ import adafruit_tmag5273 as maglib
 
 import numpy as np
 import pandas as pd 
-from frameworkOperator.pins import UP, DWN, L, R, MID, inputPins, inputNames
+from frameworkOperator.pins import UP, DWN, L, R, MID, inputPins, inputNames, debounce
 import frameworkOperator.pins
 
 def quickMean(vec):
@@ -60,6 +60,7 @@ while True:
         debounce(MID)
         break
 
+print('==========================')
 time.sleep(0.1)
 
 while True:
@@ -67,10 +68,10 @@ while True:
     temp = sensor.temperature
     
     displayOut = [f'Recording... (Press MID stop recording)',
-    f'X:    {x:.2f} μT',
-    f'Y:    {y:.2f} μT',
-    f'Z:    {z:.2f} μT',
-    f'Temp: {temp:.2f} °C',
+    f'X:    {x:.2f} μT  ',
+    f'Y:    {y:.2f} μT  ',
+    f'Z:    {z:.2f} μT  ',
+    f'Temp: {temp:.2f} °C   ',
     ]
     
     print('\n'.join(displayOut), flush=True)
@@ -99,13 +100,14 @@ time.sleep(0.5)
 
 displayOut = ['Press MID to record bolt data.          ',
 'Push R to end and output to .xlsx.',
-'                   ',
+'========================',
 '                   ',]
 
 print('\n'.join(displayOut), flush=True)
 print(f'\033[{len(displayOut)}A', end='', flush=True)
 
 print('\n')
+print('========================')
 timeInit = time.monotonic()
 runTest = True
 
@@ -113,12 +115,23 @@ while runTest:
     
     x, y, z = sensor.magnetic
     temp = sensor.temperature
+     
+    displayOut = [f'Insert sample...                         ',
+    f'Runtime: {format(time.monotonic() - timeInit)}s',
+    f'X:    {x:.3f}     μT  ',
+    f'Y:    {y:.3f}     μT  ',
+    f'Z:    {z:.3f}     μT  ',
+    f'Temp: {temp:.3f}      °C  ',
+    ]
+
+    print('\n'.join(displayOut), flush=True)
+    print(f'\033[{len(displayOut)}A', end='', flush=True)
     
     timer = time.monotonic()
     while not R.value:
         
         displayOut = [f'Holding R...                         ',
-        f'Closing in: {(timer + 3) - time.monotonic():.0}s      ',
+        f'Closing in: {(timer + 3) - time.monotonic():.1}s      ',
         f'X:    {x:.3f}     μT',
         f'Y:    {y:.3f}     μT',
         f'Z:    {z:.3f}     μT',
@@ -131,18 +144,7 @@ while runTest:
         if time.monotonic() >= timer + 3:
             runTest = False
             break
-            
-    displayOut = [f'Insert sample...                         ',
-    f'Runtime: {time.monotonic() - timeInit:.3f}s',
-    f'X:    {x:.3f}     μT',
-    f'Y:    {y:.3f}     μT',
-    f'Z:    {z:.3f}     μT',
-    f'Temp: {temp:.3f}      °C',
-    ]
-
-    print('\n'.join(displayOut), flush=True)
-    print(f'\033[{len(displayOut)}A', end='', flush=True)
-
+       
     if not MID.value:
         debounce(MID)
                 
@@ -152,9 +154,9 @@ while runTest:
             
             displayOut = [f'Recording... (Press MID stop recording)',
             f'Runtime: {time.monotonic() - timeInit:.3f}s',
-            f'X:    {x:.3f}     μT',
-            f'Y:    {y:.3f}     μT',
-            f'Z:    {z:.3f}     μT',
+            f'X:    {x:.3f}     μT  ',
+            f'Y:    {y:.3f}     μT  ',
+            f'Z:    {z:.3f}     μT  ',
 			f'Temp: {temp:.3f}      °C',
             ]
             
@@ -180,7 +182,7 @@ while runTest:
     # Display the status field if an error occured, etc.
 #    if sensor.last_status > maglib.STATUS_OK:
 #        sensor.display_status()
-print("\n\n===================")
+print("\n\n\n\n\n=======================")
 boltName = input("Bolt Name: ")
 print("Generating Excel File...")
 
@@ -196,13 +198,3 @@ df.to_excel("TMAG_" + format(boltName) + "_" + timestamp + '.xlsx', index=False,
 
 print( format(boltName) + " Dataset created.")
 
-except KeyboardInterrupt:
-    print("\n Keyboard Interrupt received — cleaning up...")
-
-finally:                                      # ← always runs, even on Ctrl+C
-    try:
-        sensor._i2c.unlock()                  # release the bus lock if held
-    except Exception:
-        pass
-    i2c.deinit()                              # fully release the I2C bus
-    print("I2C bus released.")

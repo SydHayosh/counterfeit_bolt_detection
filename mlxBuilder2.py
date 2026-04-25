@@ -77,7 +77,11 @@ def init_hardware():
 def main(sensor):
     testX, testY, testZ, testC = [], [], [], []
     entryX, entryY, entryZ, entryC = [], [], [], []
-
+    i2c = busio.I2C(board.SCL, board.SDA)
+try:
+    i2c.unlock() # Force an unlock in case it was stuck
+except:
+    pass
     print("Press MID to record ambient.")
 
     # Button debounce, only moves to next stage once button is pressed then unpressed

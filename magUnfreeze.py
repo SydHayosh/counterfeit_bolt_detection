@@ -1,26 +1,26 @@
 import board
 import busio
 import time
-from adafruit_mlx90393 import MLX90393
 
-# Initialize I2C
 i2c = busio.I2C(board.SCL, board.SDA)
 
-# 1. Manual Reset Trigger (The "Secret Shake")
-# This sends a 'Reset' command (0x06) to the device address directly
 while not i2c.try_lock():
     pass
+
 try:
-    i2c.writeto(0x18, bytes([0x06]))
-    print("Reset command sent...")
-    time.sleep(0.2) # Give it a moment to wake up
+    # The 'RR' (Read Register) command for the MLX90393 is 0x40
+    # Let's try to read Register 0x00 (Memory area)
+    # Command format: [0x40, RegisterAddress << 2]
+    # For Register 0, that is [0x40, 0x00]
+    
+    print("Attempting raw register read...")
+    i2c.writeto(0x18, bytes([0x40, 0x00]))
+    
+    result = bytearray(3) # Status byte + 2 bytes of data
+    i2c.readfrom_into(0x18, result)
+    
+    print(f"Raw Response: {result.hex()}")
+    # A healthy response starts with a status byte where the last bit is usually 0
+    
 finally:
     i2c.unlock()
-
-# 2. Now try the library initialization
-try:
-    sensor = MLX90393(i2c, address=0x18)
-    print("Success! Sensor is ready.")
-    print(f"Current gain setting: {sensor.gain}")
-except Exception as e:
-    print(f"Library still failing: {e}")

@@ -50,11 +50,12 @@ def clear_stuck_i2c():
         scl.deinit()
         sda.deinit()
 
-i2c = board.I2C()
-i = 1
-while not i2c.try_lock():
-    print("Unlock Attempts: " + format(i))
-    i += 1
+# Attempt to grab the bus and immediately release it to clear ghost locks
+clear_stuck_i2c()
+i2c = busio.I2C(board.SCL, board.SDA)
+try:
+    i2c.unlock() # Force an unlock in case it was stuck
+except:
     pass
 
 testX = []
