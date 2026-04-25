@@ -1,8 +1,4 @@
-from scipy.spatial import distance as dist
-from imutils import perspective
 from imutils import contours
-import numpy as np
-import imutils
 import cv2 as cv
 
 img = cv.imread('Photos/bolt_shaft ideal.jpg')
