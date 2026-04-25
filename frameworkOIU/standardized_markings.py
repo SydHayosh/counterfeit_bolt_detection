@@ -30,12 +30,7 @@ cannyCircle = cv.bitwise_and(cannyCircle, cannyCircle, mask=mask)
 cannyCircle = cv.dilate(cannyCircle, None, iterations=3)
 cannyCircle = cv.erode(cannyCircle, None, iterations=1)
 
-cv.imshow("Edges in Circular ROI", cannyCircle)
-
 contours, hierarchy = cv.findContours(cannyCircle, cv.RETR_LIST, cv.CHAIN_APPROX_SIMPLE)
-
-# blur = cv.medianBlur(grayCT,301) #number must be odd
-# cimg = imgCT.copy()
 
 idealBoltPhoto = img.copy()
 markings = []
