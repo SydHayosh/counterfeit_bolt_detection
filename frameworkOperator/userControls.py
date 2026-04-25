@@ -27,14 +27,22 @@ def updateMenu(newMenu):
 # Main menu options
 def startTest():
     print("Begin Test selected")
-    if mag_test(10.15): #test value hallReader.py should get this value on its own
+    setRegion(HEAD, WHITE)
+    setRegion(SHAFT, WHITE)
+    lcd.clear()
+    lcd.cursor_pos = (0,0)#(row, col)
+    lcd.write_string("Testing...")
+    mag_test(10.15)
+    if runTests(): #test value hallReader.py should get this value on its own
         setRegion(TOP, GREEN)
-        time.sleep(1)
     else:
         setRegion(TOP, RED)
-        time.sleep(1)
+
+    setRegion(HEAD, OFF)
+    setRegion(SHAFT, OFF)
+    time.sleep(3)
     setRegion(TOP, OFF)
-    runTests()
+    
 
 def exportData():
     print("Data Export selected")
