@@ -6,6 +6,16 @@ import time
 NUM_PIXELS = 32
 PIXEL_PIN = board.D18
 
+RED = (255, 0, 0)
+GREEN = (0, 255, 0)
+BLUE = (0, 0, 255)
+WHITE = (255, 255, 255)
+OFF = (0, 0, 0)
+
+TOP = (24, 32)
+HEAD = (8, 24)
+SHAFT = (0, 8)
+
 # Use SPI (GPIO10 = MOSI)
 pixels = neopixel.NeoPixel(
     PIXEL_PIN,
@@ -19,19 +29,8 @@ def set_all(color):
         pixels[i] = color
     pixels.show()
     
-def ledWhite():
-    set_all((255, 255, 255))
-
-def ledRed():
-    set_all((255, 0, 0))
-
-def ledGreen():
-    set_all((0, 255, 0))
-
-def setStrip(strip_num, color):
-    leds_per_strip = 8
-    start = strip_num * leds_per_strip
-    end = start + leds_per_strip
+def setRegion(region, color):
+    start, end = region
 
     for i in range(start, end):
         pixels[i] = color
@@ -41,22 +40,22 @@ def ledCheck():
     try:
         for i in range(3):
             print("Red")
-            set_all((255, 0, 0))
+            set_all(RED)
             time.sleep(1)
             
             print("Green")
-            set_all((0, 255, 0))
+            set_all(GREEN)
             time.sleep(1)
             
             print("Blue")
-            set_all((0, 0, 255))
+            set_all(BLUE)
             time.sleep(1)
             
             print("Off")
-            set_all((0, 0, 0))
+            set_all(OFF)
             time.sleep(1)
             
     except KeyboardInterrupt:
-        set_all((0, 0, 0,))
+        set_all(OFF)
 
 ledCheck()
