@@ -16,20 +16,13 @@ if img is None:
 
 gray = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
 gray=cv.bitwise_not(gray)
-cv.imshow('image1.jpg',gray)
-#gray = cv.GaussianBlur(gray, (3, 3), 0)
-
 
 preview = img.copy()
 cv.circle(preview, center, radius, (255,0,0), 3)
-cv.imshow("ROI Preview", preview)
 
 # Create circular mask
 mask = np.zeros_like(gray, dtype=np.uint8)
 cv.circle(mask, center, radius, 255, -1)
-
-# Apply mask
-
 
 # Edge detection ONLY in ROI
 cannyCircle = cv.Canny(gray, lowerThresh, upperThresh)
@@ -53,17 +46,8 @@ for contour in contours:
     if area > 2000:  # large = center hole
         cv.drawContours(cannyCircle, [contour], -1, 0, -1)  # erase it
 
-    # if 200 < area < 500:
-    #     print(area)
-    #     markings.append(contour)
-    #     cv.drawContours(idealBoltPhoto, [contour], -1, (0, 255, 0), 10)
-
-cv.imshow("Edges after hex removal", cannyCircle)
-
 cannyCircle = cv.dilate(cannyCircle, None, iterations=5)
 cannyCircle = cv.erode(cannyCircle, None, iterations=5)
-
-cv.imshow("Edges", cannyCircle)
 
 contours, hierarchy = cv.findContours(cannyCircle, cv.RETR_LIST, cv.CHAIN_APPROX_SIMPLE)
 
@@ -76,15 +60,8 @@ for contour in contours:
         cv.drawContours(idealBoltPhoto, [contour], -1, (0, 255, 0), 10)
         cv.drawContours(preview, [contour], -1, (0, 255, 0), 10)
 
-#cv.drawContours(idealBoltPhoto, contours, -1, (0,255,0), 10) #cv.drawContours(image being drawn on, contours, which contours to draw? just use -1, color, line thickness)
-cv.imshow('Contours', idealBoltPhoto)
 cv.imwrite("frameworkOperator/dataOut/Contours on the Ideal Bolt.jpg", idealBoltPhoto)
 
 print(f'\n There are {len(markings)} standardized markings')
 
 cv.imwrite("frameworkOperator/dataOut/ROI Preview.jpg", preview)
-cv.imshow("ROI Preview", preview)
-
-
-cv.waitKey(0)
-
