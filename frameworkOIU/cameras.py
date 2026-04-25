@@ -1,6 +1,7 @@
 import subprocess
 
 def capture_photos():
+    
     subprocess.run([
         "rpicam-still",
         "--camera", "0",

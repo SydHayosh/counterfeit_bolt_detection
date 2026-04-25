@@ -20,7 +20,36 @@ def quickMean(vec):
     mean = sum/length
 
     return mean
-i2c = board.I2C()  # uses board.SCL and board.SDA
+def clear_stuck_i2c():
+    # 1. Define the pins manually
+    scl = digitalio.DigitalInOut(board.SCL)
+    sda = digitalio.DigitalInOut(board.SDA)
+    
+    # 2. Set SCL to output, SDA to input (with pullup)
+    scl.direction = digitalio.Direction.OUTPUT
+    sda.direction = digitalio.Direction.INPUT
+    sda.pull = digitalio.Pull.UP
+    
+    # 3. Check if SDA is low (stuck)
+    if not sda.value:
+        print("I2C bus stuck! Attempting to clear...")
+        # 4. Toggle SCL 9 times to force the slave to finish its bit
+        for _ in range(9):
+            scl.value = False
+            time.sleep(0.001)
+            scl.value = True
+            time.sleep(0.001)
+        
+        # 5. Clean up pins so the I2C library can use them again
+        scl.deinit()
+        sda.deinit()
+        print("Bus cleared.")
+    else:
+        # If not stuck, just clean up
+        scl.deinit()
+        sda.deinit()
+
+i2c = board.I2C()
 
 testX = []
 testY = []
@@ -31,11 +60,8 @@ entryX = []
 entryY = []
 entryZ = []
 entryC = []
-    
-try: 
-    sensor = maglib.MLX90393(i2c)
-except ValueError:
-    sensor = maglib.MLX90393(i2c, address=0x18)
+
+sensor = maglib.MLX90393(i2c, address=0x18)
     
 print("Press MID to record ambient.")
 
@@ -49,12 +75,13 @@ while True:
 while True:
     
     x, y, z = sensor.magnetic
-    #temp = sensor.temperature
+    temp = sensor.temperature
     
     displayOut = [f'Recording... (Press MID stop recording)',
     f'X:    {x:.2f} μT',
     f'Y:    {y:.2f} μT',
     f'Z:    {z:.2f} μT',
+    f'Temp: {temp:.3f}      °C',
     ]
     
     print('\n'.join(displayOut), flush=True)
@@ -63,22 +90,23 @@ while True:
     testX.append(x)
     testY.append(y)
     testZ.append(z)
+    testC.append(temp)
     
     if not MID.value:
         while not MID.value:
             pass
         break
-    #testC.append(temp)
+    testC.append(temp)
 
 entryX.append(quickMean(testX))
 entryY.append(quickMean(testY))
 entryZ.append(quickMean(testZ))
-#entryC.append(quickMean(testC))
+entryC.append(quickMean(testC))
 
 entryX.append('')
 entryY.append('')
 entryZ.append('')
-#entryC.append('')
+entryC.append('')
 
 time.sleep(0.5)
 
@@ -98,20 +126,33 @@ runTest = True
 while runTest:
     
     timer = time.monotonic()
+    x, y, z = sensor.magnetic
+    temp = sensor.temperature
+    timer = time.monotonic()
     
     while not R.value:
+        
+        displayOut = [f'Holding R...                         ',
+        f'Closing in: {(timer + 3) - time.monotonic():.0}s      ',
+        f'X:    {x:.3f}     μT',
+        f'Y:    {y:.3f}     μT',
+        f'Z:    {z:.3f}     μT',
+        f'Temp: {temp:.3f}      °C',
+        ]
+        print('\n'.join(displayOut), flush=True)
+        print(f'\033[{len(displayOut)}A', end='', flush=True)
         if time.monotonic() >= timer + 3:
             runTest = False
             break
-    x, y, z = sensor.magnetic
-#    temp = sensor.temperature
-    
+            
     displayOut = [f'Insert sample...                         ',
     f'Runtime: {time.monotonic() - timeInit:.3f}s',
     f'X:    {x:.3f} μT',
     f'Y:    {y:.3f} μT',
     f'Z:    {z:.3f} μT',
+    f'Temp: {temp:.3f}      °C',
     ]
+    
 
     print('\n'.join(displayOut), flush=True)
     print(f'\033[{len(displayOut)}A', end='', flush=True)
@@ -122,13 +163,13 @@ while runTest:
                 
         while True:
             x, y, z = sensor.magnetic
-            #temp = sensor.temperature
+            temp = sensor.temperature
             
             displayOut = [f'Recording... (Press MID stop recording)',
             f'Runtime: {time.monotonic() - timeInit:.3f}s',
             f'X:    {x:.3f} μT',
             f'Y:    {y:.3f} μT',
-            f'Z:    {z:.3f} μT',
+			f'Temp: {temp:.3f}      °C',
             ]
             
             print('\n'.join(displayOut), flush=True)
@@ -137,7 +178,7 @@ while runTest:
             testX.append(x)
             testY.append(y)
             testZ.append(z)
-#            testC.append(temp)
+            testC.append(temp)
             if not MID.value:
                 while not MID.value:
                     pass
@@ -146,7 +187,7 @@ while runTest:
         entryX.append(quickMean(testX))
         entryY.append(quickMean(testY))
         entryZ.append(quickMean(testZ))
-#        entryC.append(quickMean(testC))
+        entryC.append(quickMean(testC))
     
     time.sleep(0.1)
     
@@ -158,10 +199,23 @@ df = pd.DataFrame({
     'X Output (μT)': entryX,
     'Y Output (μT)': entryY,
     'Z Output (μT)': entryZ,
+    'Temperature (C)': entryC,
 })
 
 timestamp = time.strftime('%Y%m%d_%H_%M_%S', time.localtime())
 df.to_excel("MLX_" + format(boltName) + "_" + timestamp + '.xlsx', index=False, sheet_name='MLX90393 Readings')
 
 print( format(boltName) + " Dataset created.")
+
+
+except KeyboardInterrupt:
+    print("\n Keyboard Interrupt received — cleaning up...")
+
+finally:                                      # ← always runs, even on Ctrl+C
+    try:
+        sensor._i2c.unlock()                  # release the bus lock if held
+    except Exception:
+        pass
+    i2c.deinit()                              # fully release the I2C bus
+    print("I2C bus released.")
 

@@ -111,15 +111,27 @@ runTest = True
 
 while runTest:
     
-    timer = time.monotonic()
-    while not R.value:
-        if time.monotonic() >= timer + 3:
-            runTest = False
-            break
-    
     x, y, z = sensor.magnetic
     temp = sensor.temperature
     
+    timer = time.monotonic()
+    while not R.value:
+        
+        displayOut = [f'Holding R...                         ',
+        f'Closing in: {(timer + 3) - time.monotonic():.0}s      ',
+        f'X:    {x:.3f}     μT',
+        f'Y:    {y:.3f}     μT',
+        f'Z:    {z:.3f}     μT',
+        f'Temp: {temp:.3f}      °C',
+        ]
+    
+        print('\n'.join(displayOut), flush=True)
+        print(f'\033[{len(displayOut)}A', end='', flush=True)
+        
+        if time.monotonic() >= timer + 3:
+            runTest = False
+            break
+            
     displayOut = [f'Insert sample...                         ',
     f'Runtime: {time.monotonic() - timeInit:.3f}s',
     f'X:    {x:.3f}     μT',
@@ -184,3 +196,13 @@ df.to_excel("TMAG_" + format(boltName) + "_" + timestamp + '.xlsx', index=False,
 
 print( format(boltName) + " Dataset created.")
 
+except KeyboardInterrupt:
+    print("\n Keyboard Interrupt received — cleaning up...")
+
+finally:                                      # ← always runs, even on Ctrl+C
+    try:
+        sensor._i2c.unlock()                  # release the bus lock if held
+    except Exception:
+        pass
+    i2c.deinit()                              # fully release the I2C bus
+    print("I2C bus released.")

@@ -10,7 +10,7 @@ PIXEL_PIN = board.D18
 pixels = neopixel.NeoPixel(
     PIXEL_PIN,
     NUM_PIXELS,
-    brightness=0.5,
+    brightness=0.2,
     auto_write=False
 )
 
