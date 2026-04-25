@@ -1,7 +1,7 @@
 from imutils import contours
 import cv2 as cv
 
-img = cv.imread('Photos/bolt_shaft ideal.jpg')
+img = cv.imread('frameworkOIU/inputCV/bolt_shaft.jpg')
 
 if img is None:
     print("Image failed to load")
@@ -34,7 +34,7 @@ cv.imshow("ROI Location", preview)
 canny = gray.copy()*0
 canny[y1:y2, x1:x2] = cv.Canny(gray.copy()[y1:y2, x1:x2], lowerThresh, lowerThresh)
 cv.imshow('Canny Edges', canny)
-cv.imwrite("Photos/output/Canny Edges Shaft.jpg", canny)
+cv.imwrite("frameworkOperator/dataOut/Canny Edges Shaft.jpg", canny)
 
 canny = cv.dilate(canny, None, iterations=6) # ideal(5), oxide(3)
 canny = cv.erode(canny, None, iterations=1)
@@ -44,7 +44,7 @@ contours, hierarchies = cv.findContours(canny, cv.RETR_LIST, cv.CHAIN_APPROX_NON
 
 Contours = img.copy()
 cv.drawContours(Contours, contours, -1, (0,255,0), 2) #cv.drawContours(image being drawn on, contours, which contours to draw? just use -1, color, line thickness)
-cv.imwrite("Photos/output/Contours 50.jpg", Contours)
+cv.imwrite("frameworkOperator/dataOut/Contours 50.jpg", Contours)
 cv.imshow('Contours', Contours)
 
 idealBoltPhoto = img.copy()
@@ -71,7 +71,7 @@ cv.imshow("ROI Location", preview)
 cannyLow = gray.copy()*0
 cannyLow[y1:y2, x1:x2] = cv.Canny(gray.copy()[y1:y2, x1:x2], lowerThresh, lowerThresh)
 cv.imshow('Canny Edges', cannyLow)
-cv.imwrite("Photos/output/Canny Edges Shaft.jpg", cannyLow)
+cv.imwrite("frameworkOperator/dataOut/Canny Edges Shaft.jpg", cannyLow)
 
 cannyLow = cv.dilate(cannyLow, None, iterations=6) # ideal(5), oxide(3)
 cannyLow = cv.erode(cannyLow, None, iterations=1)
@@ -81,7 +81,7 @@ lowContours, hierarchies = cv.findContours(cannyLow, cv.RETR_LIST, cv.CHAIN_APPR
 
 Contours = img.copy()
 cv.drawContours(Contours, lowContours, -1, (0,255,0), 2) #cv.drawContours(image being drawn on, contours, which contours to draw? just use -1, color, line thickness)
-cv.imwrite("Photos/output/Contours 50.jpg", Contours)
+cv.imwrite("frameworkOperator/dataOut/Contours 50.jpg", Contours)
 cv.imshow('Contours', Contours)
 
 lowThreads = []
@@ -96,7 +96,7 @@ for contour in lowContours:
             
 #cv.drawContours(idealBoltPhoto, contours, -1, (0,255,0), 10) #cv.drawContours(image being drawn on, contours, which contours to draw? just use -1, color, line thickness)
 cv.imshow('Contours', idealBoltPhoto)
-cv.imwrite("Photos/output/Contours on the Ideal Bolt.jpg", idealBoltPhoto)
+cv.imwrite("frameworkOperator/dataOut/Contours on the Ideal Bolt.jpg", idealBoltPhoto)
 
 print(f'\n There are {len(lowThreads)} threads in the image') # Should be 24 when looking at just the threads
 

@@ -1,7 +1,7 @@
 import numpy as np
 import cv2 as cv
 
-img = cv.imread('Photos/bolt_head ideal.jpg') # 18 seems to be in more focus
+img = cv.imread('frameworkOIU/inputCV/bolt_head.jpg') # 18 seems to be in more focus
 
 # ROI parameters
 center = (2205,1635) # true center is (2304,1296)
@@ -78,11 +78,11 @@ for contour in contours:
 
 #cv.drawContours(idealBoltPhoto, contours, -1, (0,255,0), 10) #cv.drawContours(image being drawn on, contours, which contours to draw? just use -1, color, line thickness)
 cv.imshow('Contours', idealBoltPhoto)
-cv.imwrite("Photos/output/Contours on the Ideal Bolt.jpg", idealBoltPhoto)
+cv.imwrite("frameworkOperator/dataOut/Contours on the Ideal Bolt.jpg", idealBoltPhoto)
 
 print(f'\n There are {len(markings)} standardized markings')
 
-cv.imwrite("Photos/output/ROI Preview.jpg", preview)
+cv.imwrite("frameworkOperator/dataOut/ROI Preview.jpg", preview)
 cv.imshow("ROI Preview", preview)
 
 
