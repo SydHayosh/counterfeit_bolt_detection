@@ -1,6 +1,6 @@
 from frameworkMagnetics.magCheck import setup_read_dataset, mag_test
 from ledTest import ledCheck, ledWhite, ledRed, ledGreen, setStrip
-from frameworkOIU.cameras import capture_photos
+from frameworkOIU.mainOIU import runTests
 from RPLCD.i2c import CharLCD
 import time
 import board
@@ -34,7 +34,7 @@ def startTest():
         setStrip(3, (255, 0, 0))
         time.sleep(1)
     ledWhite()
-    capture_photos()
+    runTests()
 
 def exportData():
     print("Data Export selected")
