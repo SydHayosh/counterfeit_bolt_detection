@@ -1,6 +1,6 @@
 from frameworkMagnetics.magCheck import setup_read_dataset, mag_test
 from ledTest import ledCheck, setRegion, RED, GREEN, BLUE, WHITE, OFF, TOP, HEAD, SHAFT
-#from frameworkOIU.mainOIU import runTests
+from frameworkOIU.mainOIU import runTests
 from RPLCD.i2c import CharLCD
 import time
 import board
@@ -34,7 +34,7 @@ def startTest():
         setRegion(TOP, RED)
         time.sleep(1)
     setRegion(TOP, OFF)
-    #runTests()
+    runTests()
 
 def exportData():
     print("Data Export selected")
