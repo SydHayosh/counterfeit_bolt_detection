@@ -89,3 +89,4 @@ def countThreads():
     cv.imwrite("frameworkOperator/dataOut/Contours on the Ideal Bolt.jpg", idealBoltPhoto)
 
     print(f'\n There are {len(lowThreads)} threads in the image') # Should be 17 when looking at just the threads
+    return len(lowThreads) == 17

@@ -1,8 +1,6 @@
 import numpy as np
 import cv2 as cv
 
-
-
 # ROI parameters
 center = (2205,1635) # true center is (2304,1296)
 radius = 165
@@ -63,3 +61,4 @@ def standMarkCheck():
     print(f'\n There are {len(markings)} standardized markings')
 
     cv.imwrite("frameworkOperator/dataOut/ROI Preview.jpg", preview)
+    return len(markings) > 2

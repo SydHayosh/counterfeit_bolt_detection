@@ -4,5 +4,4 @@ from .standardized_markings import standMarkCheck
 
 def runTests():
     capture_photos()
-    countThreads()
-    standMarkCheck()
+    return countThreads() or standMarkCheck()
