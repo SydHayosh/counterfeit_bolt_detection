@@ -2,7 +2,7 @@ import time
 import board
 import busio
 import digitalio
-import adafruit_tmag5273 as maglib
+import adafruit_mlx90393 as maglib
 
 import numpy as np
 import csv
@@ -28,9 +28,9 @@ testC = []
 
     
 try: 
-    sensor = maglib.TMAG5273(i2c)
+    sensor = maglib.MLX90393(i2c)
 except ValueError:
-    sensor = maglib.TMAG5273(i2c, address=0x18)
+    sensor = maglib.MLX90393(i2c, address=0x18)
     
 print("Getting Ambient...")
 
