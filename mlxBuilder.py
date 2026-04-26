@@ -22,7 +22,7 @@ def quickMean(vec):
 
     return mean
 
-i2c = busio.I2C()
+i2c = busio.I2C(board.SCL, board.SDA)
 try:
     i2c.unlock() # Force an unlock in case it was stuck
 except:
@@ -119,8 +119,8 @@ while runTest:
     print('\n'.join(displayOut), flush=True)
     print(f'\033[{len(displayOut)}A', end='', flush=True)
     
-	while not R.value:
-        
+    while not R.value:
+    
         displayOut = [f'Holding R...                         ',
         f'Closing in: {(timer + 3) - time.monotonic():.0}s      ',
         f'X:    {x:.3f}     μT',
@@ -144,8 +144,9 @@ while runTest:
             
             displayOut = [f'Recording... (Press MID stop recording)',
             f'Runtime: {time.monotonic() - timeInit:.3f}s',
-            f'X:    {x:.3f} μT',
-            f'Y:    {y:.3f} μT',
+            f'X:    {x:.3f} μT  ',
+            f'Y:    {y:.3f} μT  ',
+            f'Z:    {z:.3f} μT   ',
 			f'Temp: {temp:.3f}      °C',
             ]
             
