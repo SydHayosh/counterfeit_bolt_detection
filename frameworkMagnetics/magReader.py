@@ -8,6 +8,9 @@ import numpy as np
 import csv
 from frameworkOperator.pins import UP, DWN, L, R, MID, inputPins, inputNames, debounce
 
+i2c = busio.I2C
+sensor = maglib.MLX930393(i2c, address = 0x18)
+
 def quickMean(vec):
     length = len(vec)
     sum = 0
@@ -19,7 +22,7 @@ def quickMean(vec):
     mean = sum/length
     return mean
 
-def magRead(sensor, timer)
+def magRead(timer)
 
     testX,testY,testZ,testT = []
     testTime = time.monotonic() + timer
