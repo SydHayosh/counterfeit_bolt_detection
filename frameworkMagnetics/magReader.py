@@ -40,7 +40,7 @@ def magRead(sensor, timer)
     meanZ = np.mean(testZ)
     meanC = np.mean(testC)
 
-    magReading = [meanX, meanY, meanZ, meanC]
+    magResult = [meanX, meanY, meanZ, meanC]
     
     return magResult
 
