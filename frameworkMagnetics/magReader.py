@@ -6,7 +6,7 @@ import adafruit_mlx90393 as maglib
 
 import numpy as np
 import csv
-from frameworkOperator.pins import UP, DWN, L, R, MID, inputPins, inputNames
+from frameworkOperator.pins import UP, DWN, L, R, MID, inputPins, inputNames, debounce
 
 def quickMean(vec):
     length = len(vec)
@@ -17,55 +17,46 @@ def quickMean(vec):
         i += 1
     
     mean = sum/length
-
     return mean
+
+def magRead(sensor, timer)
+
+    testX,testY,testZ,testT = []
+    testTime = time.monotonic() + timer
+    
+    while (time.monotonic() <= testTime):
+        x, y, z = sensor.magnetic
+        try:
+            temp = sensor.temperature
+        except:
+            temp = 0
+        testX.append(x)
+        testY.append(y)
+        testZ.append(z)
+        testT.append(temp)
+
+    meanX = np.mean(testX)
+    meanY = np.mean(testY)
+    meanZ = np.mean(testZ)
+    meanC = np.mean(testC)
+
+    magReading = [meanX, meanY, meanZ, meanC]
+    
+    return magResult
+
 i2c = board.I2C()  # uses board.SCL and board.SDA
 
 testX = []
 testY = []
 testZ = []
 testC = []
-
     
 try: 
     sensor = maglib.MLX90393(i2c)
 except ValueError:
     sensor = maglib.MLX90393(i2c, address=0x18)
-    
-print("Getting Ambient...")
-
-print('\n')
-
-timeInit = time.monotonic()
-
-while (time.monotonic() < timeInit + 5):
-    x, y, z = sensor.magnetic
-    temp = sensor.temperature
-    
-    displayOut = [f'Recording... 					',
-    f'X:    {x:.2f} μT',
-    f'Y:    {y:.2f} μT',
-    f'Z:    {z:.2f} μT',
-    f'Temp: {temp:.2f} °C',
-    ]
-    
-    print('\n'.join(displayOut), flush=True)
-    print(f'\033[{len(displayOut)}A', end='', flush=True)
-    
-    testX.append(x)
-    testY.append(y)
-    testZ.append(z)
-    testC.append(temp)
-
-ambX = quickMean(testX)
-ambY = quickMean(testY)
-ambZ = quickMean(testZ)
-ambC = quickMean(testC)
-
-testX = []
-testY = []
-testZ = []
-testC = []
+	
+ambient = magRead(sensor, 3)
 
 time.sleep(0.5)
 
