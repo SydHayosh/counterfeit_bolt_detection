@@ -5,7 +5,7 @@ import cv2 as cv
 center = (2205,1635) # true center is (2304,1296)
 radius = 165
 
-lowerThresh = 75
+lowerThresh = 50
 upperThresh = 100
 
 def standMarkCheck():
@@ -28,7 +28,7 @@ def standMarkCheck():
     # Edge detection ONLY in ROI
     cannyCircle = cv.Canny(gray, lowerThresh, upperThresh)
     cannyCircle = cv.bitwise_and(cannyCircle, cannyCircle, mask=mask)
-    cannyCircle = cv.dilate(cannyCircle, None, iterations=3)
+    cannyCircle = cv.dilate(cannyCircle, None, iterations=2)
     cannyCircle = cv.erode(cannyCircle, None, iterations=1)
 
     contours, hierarchy = cv.findContours(cannyCircle, cv.RETR_LIST, cv.CHAIN_APPROX_SIMPLE)
