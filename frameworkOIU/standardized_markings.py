@@ -50,15 +50,15 @@ def standMarkCheck():
     for contour in contours:
         area = cv.contourArea(contour)
 
-        if 500 < area < 600:
+        if 500 < area:
             print(area)
             markings.append(contour)
             cv.drawContours(idealBoltPhoto, [contour], -1, (0, 255, 0), 10)
             cv.drawContours(preview, [contour], -1, (0, 255, 0), 10)
 
-    cv.imwrite("frameworkOperator/dataOut/Contours on the Ideal Bolt.jpg", idealBoltPhoto)
+    cv.imwrite("frameworkOperator/dataOut/Contours on the Ideal Bolt Head.jpg", idealBoltPhoto)
 
     print(f'\n There are {len(markings)} standardized markings')
 
-    cv.imwrite("frameworkOperator/dataOut/ROI Preview.jpg", preview)
+    cv.imwrite("frameworkOperator/dataOut/ROI Preview with marks.jpg", preview)
     return len(markings) > 2
