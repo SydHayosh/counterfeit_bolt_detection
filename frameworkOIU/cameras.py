@@ -6,7 +6,7 @@ def capture_photos():
         "rpicam-still",
         "--camera", "0",
         "--autofocus-mode", "manual",
-        "--lens-position", "20",
+        "--lens-position", "18",
         "--immediate",
         "-o", "frameworkOIU/inputCV/bolt_head.jpg"
     ])
