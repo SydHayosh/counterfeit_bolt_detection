@@ -39,8 +39,8 @@ def startTest():
     lcd.clear()
     lcd.cursor_pos = (0,0)#(row, col)
     lcd.write_string("Testing...")
-    magTest(idealData)
-    print(magTest)
+    #magTest(idealData)
+    #print(magTest)
     if runTests(): #test value hallReader.py should get this value on its own
         setRegion(TOP, GREEN)
     else:
@@ -190,7 +190,6 @@ lastState = [True] * len(inputPins)
 
 startUp()
 
-setRegion(HEAD, BLUE)
 display_menu()
 
 while True:

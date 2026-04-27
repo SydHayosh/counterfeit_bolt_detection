@@ -8,9 +8,6 @@ def countThreads():
         print("Image failed to load")
         exit()
 
-    img_gray=cv.cvtColor(img, cv.COLOR_BGR2GRAY)
-    inv_img=cv.bitwise_not(img_gray)
-
     # focuses on the upper edge
     x1 = 2200
     x2 = 2900
@@ -18,10 +15,7 @@ def countThreads():
     y2 = 1255 #1255
 
     lowerThresh = 50 # ideal(50), oxide(10)
-    upperThresh = 30 # 
-
-    print(img.shape)
-    roi = img[y1:y2, x1:x2] #Region of Interest image[y1:y2, x1:x2]
+    upperThresh = 50 # 
 
     gray = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
     gray = cv.GaussianBlur(gray, (7, 7), 0)
@@ -30,23 +24,22 @@ def countThreads():
     cv.rectangle(preview, (x1,y1),(x2,y2), (0,255,0), 5) #(x1,y1),(x2,y2) measured from the top left
 
     canny = gray.copy()*0
-    canny[y1:y2, x1:x2] = cv.Canny(gray.copy()[y1:y2, x1:x2], lowerThresh, lowerThresh)
+    canny[y1:y2, x1:x2] = cv.Canny(gray.copy()[y1:y2, x1:x2], lowerThresh, upperThresh)
     cv.imwrite("frameworkOperator/dataOut/Canny Edges Shaft.jpg", canny)
 
     canny = cv.dilate(canny, None, iterations=6) # ideal(5), oxide(3)
     canny = cv.erode(canny, None, iterations=1)
 
-
-    contours, hierarchies = cv.findContours(canny, cv.RETR_LIST, cv.CHAIN_APPROX_NONE)
+    upContours, hierarchies = cv.findContours(canny, cv.RETR_LIST, cv.CHAIN_APPROX_NONE)
 
     Contours = img.copy()
-    cv.drawContours(Contours, contours, -1, (0,255,0), 2) #cv.drawContours(image being drawn on, contours, which contours to draw? just use -1, color, line thickness)
+    cv.drawContours(Contours, upContours, -1, (0,255,0), 2) #cv.drawContours(image being drawn on, contours, which contours to draw? just use -1, color, line thickness)
     cv.imwrite("frameworkOperator/dataOut/Contours 50.jpg", Contours)
 
     idealBoltPhoto = img.copy()
     upThreads = []
 
-    for contour in contours:
+    for contour in upContours:
         area = cv.contourArea(contour)
 
         if 10 < area : # ideal(500), oxide(800)
@@ -88,5 +81,6 @@ def countThreads():
 
     cv.imwrite("frameworkOperator/dataOut/Contours on the Ideal Bolt.jpg", idealBoltPhoto)
 
-    print(f'\n There are {len(lowThreads)} threads in the image') # Should be 17 when looking at just the threads
+    print(f'\n There are {len(upThreads)} threads on the left side of the image')
+    print(f'\n There are {len(lowThreads)} threads on the right side of the image') # Should be 17 when looking at just the threads
     return len(lowThreads) == 17

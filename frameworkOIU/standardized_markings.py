@@ -5,8 +5,8 @@ import cv2 as cv
 center = (2205,1635) # true center is (2304,1296)
 radius = 165
 
-lowerThresh = 75
-upperThresh = 100
+lowerThresh = 50
+upperThresh = 50
 
 def standMarkCheck():
     img = cv.imread('frameworkOIU/inputCV/bolt_head.jpg') # 18 seems to be in more focus
@@ -28,7 +28,7 @@ def standMarkCheck():
     # Edge detection ONLY in ROI
     cannyCircle = cv.Canny(gray, lowerThresh, upperThresh)
     cannyCircle = cv.bitwise_and(cannyCircle, cannyCircle, mask=mask)
-    cannyCircle = cv.dilate(cannyCircle, None, iterations=3)
+    cannyCircle = cv.dilate(cannyCircle, None, iterations=2)
     cannyCircle = cv.erode(cannyCircle, None, iterations=1)
 
     contours, hierarchy = cv.findContours(cannyCircle, cv.RETR_LIST, cv.CHAIN_APPROX_SIMPLE)
@@ -50,15 +50,15 @@ def standMarkCheck():
     for contour in contours:
         area = cv.contourArea(contour)
 
-        if 520 < area < 600:
+        if 500 < area:
             print(area)
             markings.append(contour)
             cv.drawContours(idealBoltPhoto, [contour], -1, (0, 255, 0), 10)
             cv.drawContours(preview, [contour], -1, (0, 255, 0), 10)
 
-    cv.imwrite("frameworkOperator/dataOut/Contours on the Ideal Bolt.jpg", idealBoltPhoto)
+    cv.imwrite("frameworkOperator/dataOut/Contours on the Ideal Bolt Head.jpg", idealBoltPhoto)
 
     print(f'\n There are {len(markings)} standardized markings')
 
-    cv.imwrite("frameworkOperator/dataOut/ROI Preview.jpg", preview)
+    cv.imwrite("frameworkOperator/dataOut/ROI Preview with marks.jpg", preview)
     return len(markings) > 2
