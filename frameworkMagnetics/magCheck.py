@@ -49,7 +49,7 @@ def print_bolt_values(i):
 #setup_read_dataset(file_path, column_name, num_std=acceptedNumOfStdDev)
 
 def getIdealData(num_std):
-    idealBolt = pd.read_csv("idealBolt.csv", index_col="Axis")
+    idealBolt = pd.read_csv("./idealBolt.csv", index_col="Axis")
     xRaw = idealBolt.loc["X"].to_numpy()
     yRaw = idealBolt.loc["Y"].to_numpy()
     zRaw = idealBolt.loc["Z"].to_numpy()
