@@ -1,6 +1,7 @@
 from frameworkMagnetics.magCheck import setup_read_dataset, mag_test
 from ledTest import ledCheck, setRegion, RED, GREEN, BLUE, WHITE, OFF, TOP, HEAD, SHAFT
 from frameworkOIU.mainOIU import runTests
+from frameworkMagnetics import magCheck
 from RPLCD.i2c import CharLCD
 import time
 import board
@@ -23,6 +24,10 @@ def updateMenu(newMenu):
     currentMenu = newMenu
     currentIndex = 0
     topDisplayIndex = 0
+
+def startUp():
+    # Reads the ideal bolt magnetic dataset
+    setup_read_dataset()
 
 # Main menu options
 def startTest():
@@ -68,6 +73,7 @@ def advSettings():
 # Advanced settings menu options
 def magCriteria():
     print("Mag criteria selected")
+    updateMenu(MagCriteriaMenu)
 
 def magTestDuration():
     print("Mag Test Duration selected")
@@ -96,6 +102,9 @@ def ledTest():
     lcd.write_string("Cycling LEDs...")
     ledCheck()
 
+def stdDevAllow(num):
+    magCheck.acceptedNumOfStdDev = num
+
 # class containing the menu option name and action that it preforms
 class MenuOption:
     def __init__(self, name, action = None):
@@ -106,6 +115,7 @@ class MenuOption:
 mainMenu = []
 settingsMenu = []
 advSettingsMenu = []
+MagCriteriaMenu = []
 debugMenu = []
 currentIndex = 0
 topDisplayIndex = 0 #When the menu is greater then 2 options 
@@ -164,16 +174,18 @@ advSettingsMenu.append(MenuOption("Mag Test Duration", magTestDuration))
 advSettingsMenu.append(MenuOption("Bolt-type", changeBolt))
 advSettingsMenu.append(MenuOption("Update", update))
 
+MagCriteriaMenu.append(MenuOption("Default", lambda: stdDevAllow(2.0)))
+MagCriteriaMenu.append(MenuOption("Fair", lambda: stdDevAllow(3.0)))
+MagCriteriaMenu.append(MenuOption("Strict", lambda: stdDevAllow(1.0)))
+
 debugMenu.append(MenuOption("Check Connections", pinCheck))
 debugMenu.append(MenuOption("Camera Test", cameraTest))
 debugMenu.append(MenuOption("Mag Calibration", magCalibration))
 debugMenu.append(MenuOption("LED Test", ledTest))
 
-
 lastState = [True] * len(inputPins)
 
-# Reads the ideal bolt magnetic dataset
-setup_read_dataset()
+startUp()
 
 setRegion(HEAD, BLUE)
 display_menu()
