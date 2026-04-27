@@ -4,7 +4,7 @@ import adafruit_mlx90393 as maglib
 
 import numpy as np
 
-i2c = busio.I2C()
+i2c = busio.I2C(address=0x18)
 try: 
     sensor = maglib.MLX90393(i2c)
 except ValueError:
