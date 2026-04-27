@@ -12,7 +12,7 @@ except ValueError:
 
 def magRead(timer):
 
-    testX,testY,testZ,testC = []
+    testX,testY,testZ,testC = [], [], [], []
     testTime = time.monotonic() + timer
     
     while (time.monotonic() <= testTime):
