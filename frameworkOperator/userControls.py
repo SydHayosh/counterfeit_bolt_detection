@@ -1,4 +1,5 @@
 from frameworkMagnetics.magCheck import getIdealData, magTest
+from frameworkMagnetics.magReader import magRead
 from ledTest import ledCheck, setRegion, RED, GREEN, BLUE, WHITE, OFF, TOP, HEAD, SHAFT
 from frameworkOIU.mainOIU import runTests
 from frameworkMagnetics import magCheck
@@ -28,10 +29,12 @@ def updateMenu(newMenu):
 
 def startUp():
     # Reads the ideal bolt magnetic dataset
-    idealData = getIdealData
+    global idealData
+    idealData = getIdealData(magCheck.acceptedNumOfStdDev)
+    global ambient
+    ambient = magRead(3)
 
-
-# Main menu options
+# Main menu options =============================================================================
 def startTest():
     print("Begin Test selected")
     setRegion(HEAD, WHITE)
@@ -39,18 +42,34 @@ def startTest():
     lcd.clear()
     lcd.cursor_pos = (0,0)#(row, col)
     lcd.write_string("Testing...")
-    #magTest(idealData)
-    #print(magTest)
-    if runTests(): #test value hallReader.py should get this value on its own
-        setRegion(TOP, GREEN)
+    magResult = magTest(idealData, ambient)
+
+    lcd.clear()
+    lcd.cursor_pos = (0,0)#(row, col)
+
+    if magResult:
+            lcd.write_string("Magnetics: Passed")
+            setRegion(TOP, GREEN)
     else:
+        lcd.write_string("Magnetics: Failed")
         setRegion(TOP, RED)
+    
+    print(magResult)
+    time.stop(3)
+
+    if magResult:
+        if runTests(): #test value hallReader.py should get this value on its own
+            setRegion(TOP, GREEN)
+            lcd.clear()
+            lcd.cursor_pos = (0,0)#(row, col)
+            lcd.write_string("Optical Inspect:")
+            lcd.cursor_pos = (1,0)#(row, col)
+            lcd.write_string("Passed")
 
     setRegion(HEAD, OFF)
     setRegion(SHAFT, OFF)
     time.sleep(3)
-    setRegion(TOP, OFF)
-    
+    setRegion(TOP, OFF)  
 
 def exportData():
     print("Data Export selected")
@@ -63,8 +82,7 @@ def debugSubmenu():
     print("Debug Menu selected")
     updateMenu(debugMenu)
 
-
-# Settings menu options
+# Settings menu options ==========================================================================
 def idealBolt():
     print("Ideal Bolt selected")
 
@@ -72,8 +90,7 @@ def advSettings():
     print("Adv Settings selected")
     updateMenu(advSettingsMenu)
 
-
-# Advanced settings menu options
+# Advanced settings menu options =================================================================
 def magCriteria():
     print("Mag criteria selected")
     updateMenu(MagCriteriaMenu)
@@ -87,8 +104,7 @@ def changeBolt():
 def update():
     print("Update selected")
 
-
-# Debug menu options
+# Debug menu options =============================================================================
 def pinCheck():
     print("Check Connections selected")
 
@@ -108,13 +124,14 @@ def ledTest():
 def stdDevAllow(num):
     magCheck.acceptedNumOfStdDev = num
 
-# class containing the menu option name and action that it preforms
+# class containing the menu option name and action that it preforms ===============================
 class MenuOption:
     def __init__(self, name, action = None):
         self.name = name
         self.action = action
 
 # variables
+
 mainMenu = []
 settingsMenu = []
 advSettingsMenu = []
@@ -162,7 +179,6 @@ def display_menu():# use lcd.write_string instead of lcd.write
         except Exception as e:
           print("Error:", e)
         
-
 # Populates menu and submenus
 mainMenu.append(MenuOption("Begin Test", startTest))
 mainMenu.append(MenuOption("Data Export", exportData))
