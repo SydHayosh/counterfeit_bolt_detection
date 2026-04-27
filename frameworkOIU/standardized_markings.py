@@ -50,7 +50,7 @@ def standMarkCheck():
     for contour in contours:
         area = cv.contourArea(contour)
 
-        if 520 < area < 600:
+        if 500 < area < 600:
             print(area)
             markings.append(contour)
             cv.drawContours(idealBoltPhoto, [contour], -1, (0, 255, 0), 10)

@@ -190,7 +190,6 @@ lastState = [True] * len(inputPins)
 
 startUp()
 
-setRegion(HEAD, BLUE)
 display_menu()
 
 while True:
