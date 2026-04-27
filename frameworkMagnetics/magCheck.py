@@ -1,5 +1,5 @@
 import numpy as np
-#import pandas as pd
+import pandas as pd
 
 class Bolt:
     numBoltTypes = 0
@@ -43,32 +43,30 @@ def print_bolt_values(i):
     print("Standard Deviation: " + f"{difBoltTypes[i].stdDev}")
     print("Minimum: " + f"{difBoltTypes[i].min}")
     print("Maximum: " + f"{difBoltTypes[i].max}")
-
-# variables
-difBoltTypes = []
-acceptedNumOfStdDev = 3
-
-idealBolt = None
-
 #setup_read_dataset(file_path, column_name, num_std=acceptedNumOfStdDev)
-def setup_read_dataset():
-    # Example dataset (replace with Excel later)
-    global idealBolt
-    idealBolt = Bolt(ideal=True)
-    data = [10.1, 9.9, 10.0, 10.2, 9.8]
 
-    for d in data:
-        idealBolt.add_sample(d)
+def getIdealData(num_std):
+    idealBolt = pd.read_csv("idealBolt.csv", index_col="Axis")
+    xRaw = idealBolt.loc["X"].to_numpy()
+    yRaw = idealBolt.loc["Y"].to_numpy()
+    zRaw = idealBolt.loc["Z"].to_numpy()
 
+    x = [ (xRaw[0] - num_std*xRaw[1]), (xRaw[0] + num_std*xRaw[1])]
+    y = [ (yRaw[0] - num_std*yRaw[1]), (yRaw[0] + num_std*yRaw[1]) ]
+    z = [ (zRaw[0] - num_std*zRaw[1]), (zRaw[0] + num_std*zRaw[1]) ]
 
-testSample = 10.15 
+    idealData = [x, y, z]
+    return idealData
 
-#z first x then y
-def mag_test(test_value):
-    if idealBolt.in_range(test_value):
-        print("Magnetic test passed")
-    else:
-        print("Magnetic test failed")
-    return idealBolt.in_range(test_value)
+def magTest(sample, idealData):
+    passCriteria = [False, False, False]
+    #This code will check to see if the samples X, Y, and Z readings are good. 
+    for i in range(len(passCriteria)):
+        if (idealData[i][0] <= sample[i] <= idealData[i][1]):
+            passCriteria[i] = True
+        else:
+            passCriteria[i] = False
 
-            
+    return (all(passCriteria))
+
+    
