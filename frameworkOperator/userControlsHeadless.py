@@ -1,4 +1,4 @@
-from frameworkMagnetics.magCheck import setup_read_dataset, mag_test
+from frameworkMagnetics.magCheck import setup_read_dataset, magTest
 from ledTest import ledCheck, setRegion, RED, GREEN, BLUE, WHITE, OFF, TOP, HEAD, SHAFT
 from frameworkOIU.mainOIU import runTests
 import time

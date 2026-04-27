@@ -1,7 +1,8 @@
-from frameworkMagnetics.magCheck import setup_read_dataset, mag_test
+from frameworkMagnetics.magCheck import getIdealData, magTest
 from ledTest import ledCheck, setRegion, RED, GREEN, BLUE, WHITE, OFF, TOP, HEAD, SHAFT
 from frameworkOIU.mainOIU import runTests
 from frameworkMagnetics import magCheck
+
 from RPLCD.i2c import CharLCD
 import time
 import board
@@ -27,7 +28,8 @@ def updateMenu(newMenu):
 
 def startUp():
     # Reads the ideal bolt magnetic dataset
-    setup_read_dataset()
+    idealData = getIdealData
+
 
 # Main menu options
 def startTest():
@@ -37,7 +39,8 @@ def startTest():
     lcd.clear()
     lcd.cursor_pos = (0,0)#(row, col)
     lcd.write_string("Testing...")
-    mag_test(10.15)
+    magTest(idealData)
+    print(magTest)
     if runTests(): #test value hallReader.py should get this value on its own
         setRegion(TOP, GREEN)
     else:

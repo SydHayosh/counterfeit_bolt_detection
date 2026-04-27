@@ -1,5 +1,6 @@
 import numpy as np
 import pandas as pd
+from .magReader import magRead
 
 class Bolt:
     numBoltTypes = 0
@@ -58,8 +59,9 @@ def getIdealData(num_std):
     idealData = [x, y, z]
     return idealData
 
-def magTest(sample, idealData):
+def magTest(idealData):
     passCriteria = [False, False, False]
+    sample = magRead(3)
     #This code will check to see if the samples X, Y, and Z readings are good. 
     for i in range(len(passCriteria)):
         if (idealData[i][0] <= sample[i] <= idealData[i][1]):
