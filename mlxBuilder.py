@@ -7,7 +7,7 @@ import RPi.GPIO as GPIO
 
 import numpy as np
 import pandas as pd 
-from frameworkOperator.pins import UP, DWN, L, R, MID, inputPins, inputNames
+from frameworkOperator.pins import UP, DWN, L, R, MID, inputPins, inputNames, debounce
 import frameworkOperator.pins
 
 def quickMean(vec):
@@ -46,8 +46,7 @@ print("Press MID to record ambient.")
 #Button debounce, only moves to next stage once button is pressed then unpressed
 while True:
     if not MID.value:
-        while not MID.value:
-            pass
+        debounce(MID)
         break
 
 while True:
@@ -71,8 +70,7 @@ while True:
     testC.append(temp)
     
     if not MID.value:
-        while not MID.value:
-            pass
+        debounce(MID)
         break
     testC.append(temp)
 
