@@ -7,10 +7,41 @@ if img is None:
     print("Image failed to load")
     exit()
 
-img_gray=cv.cvtColor(img, cv.COLOR_BGR2GRAY)
-inv_img=cv.bitwise_not(img_gray)
-cv.imshow('image1.jpg',inv_img)
+lowerThresh = 50 # ideal(50), oxide(10)
+upperThresh = 50 # 
 
+# Wide box to find the bolt
+x1 = 2200
+x2 = 2850
+y1 = 1000
+y2 = 1800
+
+# preview = img.copy()
+# cv.rectangle(preview, (x1,y1),(x2,y2), (0,255,0), 5) #(x1,y1),(x2,y2) measured from the top left
+# cv.imshow("Wide scan for bolt", preview)
+
+img_gray=cv.cvtColor(img, cv.COLOR_BGR2GRAY)
+# img_gray = cv.GaussianBlur(img_gray, (101, 101), 0) # kernal needs to be an odd number
+
+canny = img_gray.copy()*0
+canny[y1:y2, x1:x2] = cv.Canny(img_gray.copy()[y1:y2, x1:x2], lowerThresh, upperThresh)
+canny = cv.dilate(canny, None, iterations=10) # ideal(5), oxide(3)
+canny = cv.erode(canny, None, iterations=4)
+
+print(f'\n There are {len(canny)} canny edges')
+cv.imshow('entire image canny', canny)
+
+contours, hierarchies = cv.findContours(canny, cv.RETR_LIST, cv.CHAIN_APPROX_NONE)
+
+boltPhoto = img.copy()
+for c in contours:
+    area = cv.contourArea(c)
+
+    if 20000 < area : # ideal(500), oxide(800)
+        print(area)
+        cv.drawContours(boltPhoto, [c], -1, (0, 255, 0), 2)
+
+cv.imshow('entire image contours', canny)
 # ## the whole bolt
 # x1 = 2000
 # x2 = 3000
@@ -35,15 +66,14 @@ x2 = 2900
 y1 = 1240 #1240
 y2 = 1255 #1255
 
-lowerThresh = 50 # ideal(50), oxide(10)
-upperThresh = 30 # 
+
 
 print(img.shape)
 roi = img[y1:y2, x1:x2] #Region of Interest image[y1:y2, x1:x2]
 #cv.imshow('ROI', roi)
 
 gray = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
-gray = cv.GaussianBlur(gray, (7, 7), 0)
+gray = cv.GaussianBlur(gray, (7, 7), 0) # kernal needs to be an odd number
 
 preview = img.copy()
 cv.rectangle(preview, (x1,y1),(x2,y2), (0,255,0), 5) #(x1,y1),(x2,y2) measured from the top left
