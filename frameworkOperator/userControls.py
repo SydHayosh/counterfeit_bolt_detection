@@ -33,6 +33,8 @@ def startUp():
     idealData = getIdealData(magCheck.acceptedNumOfStdDev)
     global ambient
     ambient = magRead(3)
+    print(idealData)
+    print(ambient)
 
 # Main menu options =============================================================================
 def startTest():
@@ -55,7 +57,7 @@ def startTest():
         setRegion(TOP, RED)
     
     print(magResult)
-    time.stop(3)
+    time.sleep(3)
 
     if magResult:
         if runTests(): #test value hallReader.py should get this value on its own
