@@ -30,16 +30,16 @@ def countThreads():
     canny = cv.dilate(canny, None, iterations=6) # ideal(5), oxide(3)
     canny = cv.erode(canny, None, iterations=1)
 
-    contours, hierarchies = cv.findContours(canny, cv.RETR_LIST, cv.CHAIN_APPROX_NONE)
+    upContours, hierarchies = cv.findContours(canny, cv.RETR_LIST, cv.CHAIN_APPROX_NONE)
 
     Contours = img.copy()
-    cv.drawContours(Contours, contours, -1, (0,255,0), 2) #cv.drawContours(image being drawn on, contours, which contours to draw? just use -1, color, line thickness)
+    cv.drawContours(Contours, upContours, -1, (0,255,0), 2) #cv.drawContours(image being drawn on, contours, which contours to draw? just use -1, color, line thickness)
     cv.imwrite("frameworkOperator/dataOut/Contours 50.jpg", Contours)
 
     idealBoltPhoto = img.copy()
     upThreads = []
 
-    for contour in contours:
+    for contour in upContours:
         area = cv.contourArea(contour)
 
         if 10 < area : # ideal(500), oxide(800)
