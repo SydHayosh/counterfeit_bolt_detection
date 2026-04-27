@@ -6,7 +6,7 @@ center = (2205,1635) # true center is (2304,1296)
 radius = 165
 
 lowerThresh = 50
-upperThresh = 100
+upperThresh = 50
 
 def standMarkCheck():
     img = cv.imread('frameworkOIU/inputCV/bolt_head.jpg') # 18 seems to be in more focus
