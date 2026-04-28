@@ -38,6 +38,8 @@ def magRead(timer):
     return magResult
 
 i2c = board.I2C()
+
+global sensor
 try:
     sensor = maglib.MLX90393(i2c)
 except:
