@@ -48,7 +48,7 @@ def startTest():
     lcd.clear()
     lcd.cursor_pos = (0,0)#(row, col)
     lcd.write_string("Testing...")
-    magResult = magTest(idealData, ambient)
+    magResult = magTest(idealData)
 
     lcd.clear()
     lcd.cursor_pos = (0,0)#(row, col)

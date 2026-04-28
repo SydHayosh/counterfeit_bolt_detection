@@ -19,6 +19,7 @@ def magRead(timer):
         testY.append(y)
         testZ.append(z)
         testC.append(temp)
+        print("X: {x:.2f} | Y: {y:.2f} | Z: {z:.2f}")
         
         time.sleep(0.05)
 
@@ -26,8 +27,9 @@ def magRead(timer):
     meanY = np.mean(testY)
     meanZ = np.mean(testZ)
     meanC = np.mean(testC)
-
+	
     magResult = [meanX, meanY, meanZ, meanC]
+    print(magResult)
     return magResult
 
 i2c = board.I2C()
