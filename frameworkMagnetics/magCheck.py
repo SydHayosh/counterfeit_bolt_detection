@@ -64,7 +64,7 @@ def getIdealData(num_std):
 def magTest(idealData, ambient):    
     passCriteria = [0, 0, 0]
     magResult = False
-    sample = magRead(3)
+    sample = magRead(5)
     
     #This code will check to see if the samples X, Y, and Z readings are good. 
     for i in range(len(passCriteria)):
