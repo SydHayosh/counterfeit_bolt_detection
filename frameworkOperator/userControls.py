@@ -55,11 +55,12 @@ def startTest():
     lcd.cursor_pos = (0,0)#(row, col)
     print(magResult)
     if magResult:
-        lcd.write_string("Magnetics Passed")
+		setRegion(TOP,BLUE)
+        lcd.write_string("Magnetics Eval.")
     else:
-        lcd.write_string("Magnetics Failed")
+		setRegion(TOP,RED)
+        lcd.write_string("Magnetics Eval.")
 
-    
     print(magResult)
     time.sleep(3)
     OIUResult = runOIUTests()
