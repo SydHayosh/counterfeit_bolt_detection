@@ -45,7 +45,6 @@ try:
 except Exception:
     sensor = maglib.MLX90393(i2c, address=0x18, gain=maglib.GAIN_1X)
 
-sensor.reset()
 time.sleep(0.1)
 
 
