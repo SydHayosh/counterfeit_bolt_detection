@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 from .magReader import magRead
 
-acceptedNumOfStdDev = 2
+acceptedNumOfStdDev = 1
 
 class Bolt:
     numBoltTypes = 0
