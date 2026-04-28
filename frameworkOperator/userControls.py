@@ -45,6 +45,7 @@ def startTest():
     lcd.clear()
     lcd.cursor_pos = (0,0)#(row, col)
     lcd.write_string("Testing...")
+    setRegion(TOP, BLUE)
     magResult = magTest(idealData, ambient)
 
     lcd.clear()
@@ -52,29 +53,26 @@ def startTest():
 
     if magResult:
         lcd.write_string("Magnetics Passed")
-        setRegion(TOP, BLUE)
     else:
         lcd.write_string("Magnetics Failed")
-        setRegion(TOP, RED)
     
     print(magResult)
-    time.sleep(3)
 
-    if magResult:
-        if runOIUTests(): #test value hallReader.py should get this value on its own
-            setRegion(TOP, GREEN)
-            lcd.clear()
-            lcd.cursor_pos = (0,0)#(row, col)
-            lcd.write_string("Optical Inspect")
-            lcd.cursor_pos = (1,0)#(row, col)
-            lcd.write_string("Passed")
-        else:
-            setRegion(TOP, RED)
-            lcd.clear()
-            lcd.cursor_pos = (0,0)#(row, col)
-            lcd.write_string("Optical Inspect")
-            lcd.cursor_pos = (1,0)#(row, col)
-            lcd.write_string("Failed")
+    OIUResult = runOIUTests()
+
+    lcd.clear()
+    lcd.cursor_pos = (0,0)#(row, col)
+
+    if OIUResult: #test value hallReader.py should get this value on its own
+        setRegion(TOP, GREEN)
+        lcd.write_string("Optical Inspect")
+        lcd.cursor_pos = (1,0)#(row, col)
+        lcd.write_string("Passed")
+    else:
+        setRegion(TOP, RED)
+        lcd.write_string("Optical Inspect")
+        lcd.cursor_pos = (1,0)#(row, col)
+        lcd.write_string("Failed")
 
     setRegion(HEAD, OFF)
     setRegion(SHAFT, OFF)

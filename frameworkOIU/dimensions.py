@@ -7,9 +7,6 @@ def countThreads():
     lowerThresh = 30
     upperThresh = 50 
 
-    # -----------------------------
-    # STAGE 1: DETECT BOLT
-    # -----------------------------
     def detect_bolt(img):
         gray = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
         blur = cv.GaussianBlur(gray, (9, 9), 0)
@@ -34,13 +31,12 @@ def countThreads():
 
         x, y, w, h = cv.boundingRect(bolt_contour)
 
+        print(f"Bolt width is {w} pixels")
+
 
         return (x, y, w, h), bolt_contour
 
 
-    # -----------------------------
-    # STAGE 2: DETECT THREADS
-    # -----------------------------
     def extract_thread_contours(roi, y_offset, x_offset):
         if roi is None or roi.size == 0:
             return []
@@ -98,17 +94,12 @@ def countThreads():
 
         return top_threads, bottom_threads
 
-
-    # -----------------------------
-    # MAIN
-    # -----------------------------
     img = cv.imread(IMAGE_PATH)
 
     if img is None:
         print("Image failed to load")
         exit()
 
-    # Stage 1: Bolt detection
     result = detect_bolt(img)
 
     if result is None:
@@ -121,7 +112,6 @@ def countThreads():
     output = img.copy()
     cv.rectangle(output, (x, y), (x+w, y+h), (0, 255, 0), 3)
 
-    # Stage 2: Thread detection
     result = detect_threads(img, bolt_bbox)
 
     if not result or len(result) != 2:
