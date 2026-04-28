@@ -25,6 +25,11 @@ entryY = []
 entryZ = []
 entryC = []
 
+ambX = []
+ambY = []
+ambZ = []
+ambC = []
+
 try:
     sensor = maglib.MLX90393(i2c)
     print("Press MID to record ambient.")
@@ -58,17 +63,16 @@ try:
         if not MID.value:
             debounce(MID)
             break
-        testC.append(temp)
     
-    entryX.append(np.mean(testX))
-    entryY.append(np.mean(testY))
-    entryZ.append(np.mean(testZ))
-    entryC.append(np.mean(testC))
-    
-    entryX.append('')
-    entryY.append('')
-    entryZ.append('')
-    entryC.append('')
+    ambX = np.mean(testX)
+    ambY = np.mean(testY)
+    ambZ = np.mean(testZ)
+    ambC = np.mean(testC)
+
+    testX.clear()
+    testY.clear()
+    testZ.clear()
+    testC.clear()
     
     time.sleep(0.5)
     
@@ -151,6 +155,11 @@ try:
             entryY.append(np.mean(testY))
             entryZ.append(np.mean(testZ))
             entryC.append(np.mean(testC))
+
+            testX.clear()
+            testY.clear()
+            testZ.clear()
+            testC.clear()
         
         time.sleep(0.1)
 
@@ -162,18 +171,25 @@ finally:
     i2c.deinit()
 
 print("\n\n\n\n\n=====================")
-boltName = input("Bolt Name: ")
-print("Generating Excel File...")
+
+# Subtract ambient from each entry
+adjX = [v - ambX for v in entryX]
+adjY = [v - ambY for v in entryY]
+adjZ = [v - ambZ for v in entryZ]
+adjC = [v - ambC for v in entryC]
+
+n = len(adjX)
+bolt_cols = {f'Bolt{i+1}': [adjX[i], adjY[i], adjZ[i], adjC[i]] for i in range(n)}
 
 df = pd.DataFrame({
-    'X Output (μT)': entryX,
-    'Y Output (μT)': entryY,
-    'Z Output (μT)': entryZ,
-    'Temperature (C)': entryC,
+    'Axis':   ['X', 'Y', 'Z', 'Temp'],
+    'Mean':   [np.mean(adjX), np.mean(adjY), np.mean(adjZ), np.mean(adjC)],
+    'StdDev': [np.std(adjX),  np.std(adjY),  np.std(adjZ),  np.std(adjC)],
+    **bolt_cols
 })
 
 timestamp = time.strftime('%Y%m%d_%H_%M_%S', time.localtime())
 df.to_excel(format(boltName) + "_" + timestamp + '.xlsx', index=False, sheet_name='Readings')
 
-print( format(boltName) + " Dataset created.")
+print(format(boltName) + " Dataset created.")
 
