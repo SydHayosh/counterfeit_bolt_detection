@@ -8,7 +8,6 @@ import numpy as np
 def magRead(timer):
     testX,testY,testZ,testC = [], [], [], []
     testTime = time.monotonic() + timer
-    sensor.reset()
     while (time.monotonic() <= testTime):
         x, y, z = sensor.magnetic
         try:
@@ -26,7 +25,6 @@ def magRead(timer):
     meanC = np.mean(testC)
 
     magResult = [meanX, meanY, meanZ, meanC]
-    reset_mlx(address=0x18)
     return magResult
 
 i2c = board.I2C()
