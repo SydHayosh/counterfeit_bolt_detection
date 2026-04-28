@@ -8,7 +8,6 @@ import numpy as np
 def magRead(timer):
     testX,testY,testZ,testC = [], [], [], []
     testTime = time.monotonic() + timer
-    sensor.reset()
     while (time.monotonic() <= testTime):
         x, y, z = sensor.magnetic
         try:
