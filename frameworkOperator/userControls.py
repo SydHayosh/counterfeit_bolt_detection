@@ -51,8 +51,8 @@ def startTest():
     lcd.cursor_pos = (0,0)#(row, col)
 
     if magResult:
-            lcd.write_string("Magnetics: Passed")
-            setRegion(TOP, GREEN)
+        lcd.write_string("Magnetics: Passed")
+        setRegion(TOP, GREEN)
     else:
         lcd.write_string("Magnetics: Failed")
         setRegion(TOP, RED)
