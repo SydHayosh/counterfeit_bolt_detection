@@ -1,7 +1,7 @@
 import cv2 as cv
 import numpy as np
 
-IMAGE_PATH = 'Photos/bolt_shaft copy.jpg'
+IMAGE_PATH = 'Photos/bolt_shaft ideal.jpg'
 lowerThresh = 30
 upperThresh = 50 
 
@@ -42,7 +42,7 @@ def detect_bolt(img):
 def detect_threads(img, bolt_bbox):
     x, y, w, h = bolt_bbox
 
-    BAND_HEIGHT = 30
+    BAND_HEIGHT = 20
     MARGIN = 10
 
     if h < (2 * BAND_HEIGHT + 2 * MARGIN):
@@ -81,22 +81,10 @@ def detect_threads(img, bolt_bbox):
 
         thread_contours = []
 
-        # for c in contours:
-        #     area = cv.contourArea(c)
-
-        #     if 10 < area:
-        #         thread_contours.append(c)
-
-    
-
         for c in contours:
             area = cv.contourArea(c)
-            if area < 5:
-                continue
 
-            x_c, y_c, w_c, h_c = cv.boundingRect(c)
-
-            if w_c > 3 * h_c:
+            if 10 < area:
                 c = c + np.array([[x_offset, y_offset]])
                 thread_contours.append(c)
 
