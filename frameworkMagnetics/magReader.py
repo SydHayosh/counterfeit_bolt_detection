@@ -29,6 +29,7 @@ def reset_mlx(address=0x18, bus_num=1):
 def magRead(timer):
     testX,testY,testZ,testC = [], [], [], []
     testTime = time.monotonic() + timer
+    sensor.reset()
     while (time.monotonic() <= testTime):
         x, y, z = sensor.magnetic
         try:
@@ -50,6 +51,7 @@ def magRead(timer):
     return magResult
 
 reset_mlx(address=0x18)
-i2c = busio.I2C()
+i2c = busio.I2C(board.SCL, board.SDA)
 sensor = maglib.MLX90393(i2c, address=0x18)
+sensor.reset()
 
