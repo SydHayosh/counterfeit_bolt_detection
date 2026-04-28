@@ -1,8 +1,9 @@
 from imutils import contours
+import numpy as np
 import cv2 as cv
 
 def countThreads():
-    IMAGE_PATH = 'Photos/bolt_shaft ideal.jpg'
+    IMAGE_PATH = 'frameworkOIU/inputCV/bolt_shaft.jpg'
     lowerThresh = 30
     upperThresh = 50 
 
