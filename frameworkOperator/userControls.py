@@ -33,9 +33,10 @@ def startUp():
     #idealData = getIdealData(magCheck.acceptedNumOfStdDev)
     idealData = getIdealData(3)
     global ambient
-    ambient = magRead(3)
+    ambient = [0,0,0]
+    #ambient = magRead(3)
     print(idealData)
-    print(ambient)
+    #print(ambient)
 
 # Main menu options =============================================================================
 def startTest():
@@ -57,7 +58,7 @@ def startTest():
         setRegion(TOP, BLUE)
     else:
         lcd.write_string("Magnetics Failed")
-        cd.cursor_pos = (1,0)
+        lcd.cursor_pos = (1,0)
         lcd.write_string("Ending...")
         setRegion(TOP, RED)
     
