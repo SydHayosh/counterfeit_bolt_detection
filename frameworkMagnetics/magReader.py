@@ -8,7 +8,11 @@ import numpy as np
 def reset_mlx(address=0x18, bus_num=1):
     bus = smbus2.SMBus(bus_num)
     try:
-        bus.write_byte(address, 0xF0)   # Exit mode
+        for attempt in range(5):
+            try:
+                bus.write_byte(address, 0xF0)   # Exit mode
+            except OSError:
+                time.sleep(0.1)
         time.sleep(0.01)
         # First reset attempt may fail — retry until it succeeds
         for attempt in range(5):
@@ -17,16 +21,14 @@ def reset_mlx(address=0x18, bus_num=1):
                 break
             except OSError:
                 time.sleep(0.02)
-        time.sleep(0.1)  # Give MLX more time to fully boot
+        time.sleep(0.1)  # MLX more time to fully boot
     finally:
         bus.close()
     time.sleep(0.1)  # Extra settle time before I2C bus reinit
 
 def magRead(timer):
-
     testX,testY,testZ,testC = [], [], [], []
     testTime = time.monotonic() + timer
-    reset_mlx(0x18)
     while (time.monotonic() <= testTime):
         x, y, z = sensor.magnetic
         try:
@@ -44,12 +46,10 @@ def magRead(timer):
     meanC = np.mean(testC)
 
     magResult = [meanX, meanY, meanZ, meanC]
-    
+    reset_mlx(address=0x18)
     return magResult
 
-reset_mlx(0x18)
-reset_mlx(0x18)
+reset_mlx(address=0x18)
 i2c = busio.I2C(board.SCL, board.SDA)
 sensor = maglib.MLX90393(i2c, address=0x18)
-
 
