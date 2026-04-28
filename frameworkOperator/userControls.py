@@ -58,7 +58,7 @@ def startTest():
         setRegion(TOP,BLUE)
         lcd.write_string("Magnetics Eval.")
     else:
-	    setRegion(TOP,RED)
+        setRegion(TOP,RED)
         lcd.write_string("Magnetics Eval.")
 
     print(magResult)
