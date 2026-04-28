@@ -1,26 +1,12 @@
 import time
 import board
-import busio
 import digitalio
 import adafruit_mlx90393 as maglib
-import RPi.GPIO as GPIO
 
 import numpy as np
 import pandas as pd 
 from frameworkOperator.pins import UP, DWN, L, R, MID, inputPins, inputNames, debounce
 import frameworkOperator.pins
-
-def quickMean(vec):
-    length = len(vec)
-    sum = 0
-    i = 0
-    while (i < len(vec)):
-        sum += vec[i]
-        i += 1
-    
-    mean = sum/length
-
-    return mean
 
 i2c = board.I2C()
 
@@ -28,8 +14,6 @@ try:
     i2c.unlock() # Force an unlock in case it was stuck
 except:
     i2c.deinit()
-
-i2c = board.I2C()
 
 testX = []
 testY = []
@@ -41,9 +25,13 @@ entryY = []
 entryZ = []
 entryC = []
 
+ambX = []
+ambY = []
+ambZ = []
+ambC = []
+
 try:
-    sensor = maglib.MLX90393(i2c, address=0x18)
-        
+    sensor = maglib.MLX90393(i2c)
     print("Press MID to record ambient.")
     
     #Button debounce, only moves to next stage once button is pressed then unpressed
@@ -58,9 +46,9 @@ try:
         temp = sensor.temperature
         
         displayOut = [f'Recording... (Press MID stop recording)',
-        f'X:    {x:.2f} μT',
-        f'Y:    {y:.2f} μT',
-        f'Z:    {z:.2f} μT',
+        f'X:    {x:.3f} μT',
+        f'Y:    {y:.3f} μT',
+        f'Z:    {z:.3f} μT',
         f'Temp: {temp:.3f}      °C',
         ]
         
@@ -75,17 +63,16 @@ try:
         if not MID.value:
             debounce(MID)
             break
-        testC.append(temp)
     
-    entryX.append(quickMean(testX))
-    entryY.append(quickMean(testY))
-    entryZ.append(quickMean(testZ))
-    entryC.append(quickMean(testC))
-    
-    entryX.append('')
-    entryY.append('')
-    entryZ.append('')
-    entryC.append('')
+    ambX = np.mean(testX)
+    ambY = np.mean(testY)
+    ambZ = np.mean(testZ)
+    ambC = np.mean(testC)
+
+    testX.clear()
+    testY.clear()
+    testZ.clear()
+    testC.clear()
     
     time.sleep(0.5)
     
@@ -107,7 +94,6 @@ try:
         timer = time.monotonic()
         x, y, z = sensor.magnetic
         temp = sensor.temperature
-        timer = time.monotonic()
                 
         displayOut = [f'Insert sample...                         ',
         f'Runtime: {time.monotonic() - timeInit:.3f}s',
@@ -124,7 +110,7 @@ try:
         while not R.value:
         
             displayOut = [f'Holding R...                         ',
-            f'Closing in: {(timer + 3) - time.monotonic():.0}s      ',
+            f'Closing in: {(timer + 3) - time.monotonic():.0f}s      ',
             f'X:    {x:.3f} μT  ',
             f'Y:    {y:.3f} μT  ',
             f'Z:    {z:.3f} μT  ',
@@ -164,10 +150,15 @@ try:
                         pass
                     break
             
-            entryX.append(quickMean(testX))
-            entryY.append(quickMean(testY))
-            entryZ.append(quickMean(testZ))
-            entryC.append(quickMean(testC))
+            entryX.append(np.mean(testX))
+            entryY.append(np.mean(testY))
+            entryZ.append(np.mean(testZ))
+            entryC.append(np.mean(testC))
+
+            testX.clear()
+            testY.clear()
+            testZ.clear()
+            testC.clear()
         
         time.sleep(0.1)
 
@@ -177,19 +168,29 @@ finally:
     except:
         pass      
     i2c.deinit()
+
 print("\n\n\n\n\n=====================")
-boltName = input("Bolt Name: ")
-print("Generating Excel File...")
+
+boltName = input("Enter Boltname: ")
+
+# Subtract ambient from each entry
+adjX = [v - ambX for v in entryX]
+adjY = [v - ambY for v in entryY]
+adjZ = [v - ambZ for v in entryZ]
+adjC = [v - ambC for v in entryC]
+
+n = len(adjX)
+bolt_cols = {f'Bolt{i+1}': [adjX[i], adjY[i], adjZ[i], adjC[i]] for i in range(n)}
 
 df = pd.DataFrame({
-    'X Output (μT)': entryX,
-    'Y Output (μT)': entryY,
-    'Z Output (μT)': entryZ,
-    'Temperature (C)': entryC,
+    'Axis':   ['X', 'Y', 'Z', 'Temp'],
+    'Mean':   [np.mean(adjX), np.mean(adjY), np.mean(adjZ), np.mean(adjC)],
+    'StdDev': [np.std(adjX),  np.std(adjY),  np.std(adjZ),  np.std(adjC)],
+    **bolt_cols
 })
 
 timestamp = time.strftime('%Y%m%d_%H_%M_%S', time.localtime())
-df.to_excel("MLX_" + format(boltName) + "_" + timestamp + '.xlsx', index=False, sheet_name='MLX90393 Readings')
+df.to_excel(format(boltName) + "_" + timestamp + '.xlsx', index=False, sheet_name='Readings')
 
-print( format(boltName) + " Dataset created.")
+print(format(boltName) + " Dataset created.")
 

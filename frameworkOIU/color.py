@@ -41,7 +41,7 @@ def colorCheck():
 
     if(r > 100 and g > 100 and b > 100):
         return "silver"
-    elif(b > r and r > g):
+    elif(b > r and b > g):
         return "black"
     elif(r > b and b > g):
         return "gold"
