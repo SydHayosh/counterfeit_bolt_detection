@@ -5,7 +5,7 @@ import adafruit_mlx90393 as maglib
 import numpy as np
 
 def magRead(timer):
-    sensor.reset()
+    time.sleep(1)
     testX,testY,testZ,testC = [], [], [], []
     testTime = time.monotonic() + timer
     
@@ -21,7 +21,7 @@ def magRead(timer):
         testC.append(temp)
         print(f"X: {x:.2f} | Y: {y:.2f} | Z: {z:.2f}")
         
-        time.sleep(0.05)
+        time.sleep(0.25)
 
     meanX = np.mean(testX)
     meanY = np.mean(testY)
