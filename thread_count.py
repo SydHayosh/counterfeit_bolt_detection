@@ -66,8 +66,6 @@ x2 = 2900
 y1 = 1240 #1240
 y2 = 1255 #1255
 
-
-
 print(img.shape)
 roi = img[y1:y2, x1:x2] #Region of Interest image[y1:y2, x1:x2]
 #cv.imshow('ROI', roi)
