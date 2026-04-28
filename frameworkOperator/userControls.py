@@ -13,7 +13,7 @@ from .pins import UP, DWN, L, R, MID, inputPins, inputNames
 lcd = CharLCD(
     i2c_expander='PCF8574',
     address=0x27,
-    port=1,
+    port=3,
     cols=16,
     rows=2,
     #charmap='A02'
