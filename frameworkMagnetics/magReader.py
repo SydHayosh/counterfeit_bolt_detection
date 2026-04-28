@@ -11,9 +11,10 @@ def cleanup():
     except Exception:
         pass
     try:
-        i2c.deinit()
-    except Exception:
+		i2c.unlock()
+	except Exception:
         pass
+    i2c.deinit()
 
 def magRead(timer):
     sensor.reset()
