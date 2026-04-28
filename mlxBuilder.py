@@ -174,10 +174,10 @@ print("\n\n\n\n\n=====================")
 boltName = input("Enter Boltname: ")
 
 # Subtract ambient from each entry
-adjX = [v - ambX for v in entryX]
-adjY = [v - ambY for v in entryY]
-adjZ = [v - ambZ for v in entryZ]
-adjC = [v - ambC for v in entryC]
+adjX = [v - 0 for v in entryX]
+adjY = [v - 0 for v in entryY]
+adjZ = [v - 0 for v in entryZ]
+adjC = [v - 0 for v in entryC]
 
 n = len(adjX)
 bolt_cols = {f'Bolt{i+1}': [adjX[i], adjY[i], adjZ[i], adjC[i]] for i in range(n)}
