@@ -1,7 +1,7 @@
 from frameworkMagnetics.magReader import magRead, cleanup
 from frameworkMagnetics.magCheck import getIdealData, magTest
 from ledTest import ledCheck, setRegion, RED, GREEN, BLUE, WHITE, OFF, TOP, HEAD, SHAFT
-from frameworkOIU.mainOIU import runTests
+from frameworkOIU.mainOIU import runOIUTests
 import frameworkMagnetics.magCheck
 import atexit
 from RPLCD.i2c import CharLCD
@@ -61,7 +61,7 @@ def startTest():
     time.sleep(3)
 
     if magResult:
-        if runTests(): #test value hallReader.py should get this value on its own
+        if runOIUTests(): #test value hallReader.py should get this value on its own
             setRegion(TOP, GREEN)
             lcd.clear()
             lcd.cursor_pos = (0,0)#(row, col)

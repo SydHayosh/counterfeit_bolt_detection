@@ -6,7 +6,7 @@ from .color import colorCheck
 
 
 
-def runTests():
+def runOIUTests():
     setRegion(HEAD, WHITE)
     capture_head()
     color = colorCheck()
