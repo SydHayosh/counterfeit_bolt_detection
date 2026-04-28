@@ -156,18 +156,21 @@ try:
             testC.clear()
         
         time.sleep(0.1)
+except Exception:
+    print("Unexpected Exception")
+    pass
 
 print("\n\n\n\n\n=====================")
 
 boltName = input("Enter Boltname: ")
 
-n = len(adjX)
-bolt_cols = {f'Bolt{i+1}': [adjX[i], adjY[i], adjZ[i], adjC[i]] for i in range(n)}
+n = len(entryX)
+bolt_cols = {f'Bolt{i+1}': [entryX[i], entryY[i], entry[i], entryC[i]] for i in range(n)}
 
 df = pd.DataFrame({
     'Axis':   ['X', 'Y', 'Z', 'Temp'],
-    'Mean':   [np.mean(adjX), np.mean(adjY), np.mean(adjZ), np.mean(adjC)],
-    'StdDev': [np.std(adjX),  np.std(adjY),  np.std(adjZ),  np.std(adjC)],
+    'Mean':   [np.mean(entryX), np.mean(entryY), np.mean(entryZ), np.mean(entryC)],
+    'StdDev': [np.std(entryX),  np.std(entryY),  np.std(entryZ),  np.std(entryC)],
     **bolt_cols
 })
 
