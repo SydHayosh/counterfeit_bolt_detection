@@ -10,11 +10,6 @@ import frameworkOperator.pins
 
 i2c = board.I2C()
 
-try:
-    i2c.unlock() # Force an unlock in case it was stuck
-except:
-    i2c.deinit()
-
 testX = []
 testY = []
 testZ = []
@@ -162,22 +157,9 @@ try:
         
         time.sleep(0.1)
 
-finally:
-    try:
-        i2c.unlock()
-    except:
-        pass      
-    i2c.deinit()
-
 print("\n\n\n\n\n=====================")
 
 boltName = input("Enter Boltname: ")
-
-# Subtract ambient from each entry
-adjX = [v - 0 for v in entryX]
-adjY = [v - 0 for v in entryY]
-adjZ = [v - 0 for v in entryZ]
-adjC = [v - 0 for v in entryC]
 
 n = len(adjX)
 bolt_cols = {f'Bolt{i+1}': [adjX[i], adjY[i], adjZ[i], adjC[i]] for i in range(n)}
