@@ -25,7 +25,6 @@ def magRead(timer):
     meanC = np.mean(testC)
 
     magResult = [meanX, meanY, meanZ, meanC]
-    reset_mlx(address=0x18)
     return magResult
 
 i2c = board.I2C()
