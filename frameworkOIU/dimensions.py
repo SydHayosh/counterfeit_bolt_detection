@@ -2,85 +2,132 @@ from imutils import contours
 import cv2 as cv
 
 def countThreads():
-    img = cv.imread('frameworkOIU/inputCV/bolt_shaft.jpg')
+    IMAGE_PATH = 'Photos/bolt_shaft ideal.jpg'
+    lowerThresh = 30
+    upperThresh = 50 
+
+    # -----------------------------
+    # STAGE 1: DETECT BOLT
+    # -----------------------------
+    def detect_bolt(img):
+        gray = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
+        blur = cv.GaussianBlur(gray, (9, 9), 0)
+
+        edges = cv.Canny(blur, 30, 100)
+        edges = cv.dilate(edges, None, iterations=3)
+        edges = cv.erode(edges, None, iterations=2)
+
+        contours, _ = cv.findContours(edges, cv.RETR_EXTERNAL, cv.CHAIN_APPROX_SIMPLE)
+
+        bolt_contour = None
+        max_area = 0
+
+        for c in contours:
+            area = cv.contourArea(c)
+            if area > max_area:
+                max_area = area
+                bolt_contour = c
+
+        if bolt_contour is None:
+            return None
+
+        x, y, w, h = cv.boundingRect(bolt_contour)
+
+
+        return (x, y, w, h), bolt_contour
+
+
+    # -----------------------------
+    # STAGE 2: DETECT THREADS
+    # -----------------------------
+    def detect_threads(img, bolt_bbox):
+        x, y, w, h = bolt_bbox
+
+        BAND_HEIGHT = 20
+        MARGIN = 10
+
+        if h < (2 * BAND_HEIGHT + 2 * MARGIN):
+            print("Bolt too small for thread detection")
+            return []
+        
+        gray = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
+        blur = cv.GaussianBlur(gray, (7, 7), 0)
+
+        # Define ROIs RELATIVE to bolt
+        top_y1 = int(y)
+        top_y2 = top_y1 + BAND_HEIGHT
+
+        bot_y2 = int(y + h)
+        bot_y1 = bot_y2 - BAND_HEIGHT
+
+        x1 = int(x)
+        x2 = int(x + w)
+
+        top_band = blur[top_y1:top_y2, x1:x2]
+        bottom_band = blur[bot_y1:bot_y2, x1:x2]
+
+        debug = img.copy()
+
+        cv.rectangle(debug, (x1, top_y1), (x2, top_y2), (255, 0, 0), 2)
+        cv.rectangle(debug, (x1, bot_y1), (x2, bot_y2), (0, 0, 255), 2)
+
+        def extract_thread_contours(roi, y_offset, x_offset):
+            edges = cv.Canny(roi, 30, 100)
+            edges = cv.dilate(edges, None, iterations=2)
+            edges = cv.erode(edges, None, iterations=1)
+
+            contours, _ = cv.findContours(edges, cv.RETR_LIST, cv.CHAIN_APPROX_NONE)
+
+            thread_contours = []
+
+            for c in contours:
+                area = cv.contourArea(c)
+
+                if 10 < area:
+                    c = c + np.array([[x_offset, y_offset]])
+                    thread_contours.append(c)
+
+            return thread_contours
+
+
+        top_threads = extract_thread_contours(top_band, top_y1, x1)
+        bottom_threads = extract_thread_contours(bottom_band, bot_y1, x1)
+
+        return top_threads, bottom_threads
+
+
+    # -----------------------------
+    # MAIN
+    # -----------------------------
+    img = cv.imread(IMAGE_PATH)
 
     if img is None:
         print("Image failed to load")
         exit()
 
-    # focuses on the upper edge
-    x1 = 2200
-    x2 = 2900
-    y1 = 1240 #1240
-    y2 = 1255 #1255
+    # Stage 1: Bolt detection
+    result = detect_bolt(img)
 
-    lowerThresh = 50 # ideal(50), oxide(10)
-    upperThresh = 50 # 
+    if result is None:
+        print("Bolt not found")
+        exit()
 
-    gray = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
-    gray = cv.GaussianBlur(gray, (7, 7), 0)
+    (bolt_bbox, bolt_contour) = result
+    x, y, w, h = bolt_bbox
 
-    preview = img.copy()
-    cv.rectangle(preview, (x1,y1),(x2,y2), (0,255,0), 5) #(x1,y1),(x2,y2) measured from the top left
+    output = img.copy()
+    cv.rectangle(output, (x, y), (x+w, y+h), (0, 255, 0), 3)
 
-    canny = gray.copy()*0
-    canny[y1:y2, x1:x2] = cv.Canny(gray.copy()[y1:y2, x1:x2], lowerThresh, upperThresh)
-    cv.imwrite("frameworkOperator/dataOut/Canny Edges Shaft.jpg", canny)
+    # Stage 2: Thread detection
+    top_threads, bottom_threads = detect_threads(img, bolt_bbox)
 
-    canny = cv.dilate(canny, None, iterations=6) # ideal(5), oxide(3)
-    canny = cv.erode(canny, None, iterations=1)
+    for t in top_threads:
+        cv.drawContours(output, [t], -1, (0, 0, 255), 2)
 
-    upContours, hierarchies = cv.findContours(canny, cv.RETR_LIST, cv.CHAIN_APPROX_NONE)
+    for t in bottom_threads:
+        cv.drawContours(output, [t], -1, (0, 0, 255), 2)
 
-    Contours = img.copy()
-    cv.drawContours(Contours, upContours, -1, (0,255,0), 2) #cv.drawContours(image being drawn on, contours, which contours to draw? just use -1, color, line thickness)
-    cv.imwrite("frameworkOperator/dataOut/Contours 50.jpg", Contours)
+    print(f"{len(top_threads)} threads on top and {len(bottom_threads)} threads on the bottom")
 
-    idealBoltPhoto = img.copy()
-    upThreads = []
+    cv.imwrite("frameworkOperator/dataOut/Thread count.jpg", output)
 
-    for contour in upContours:
-        area = cv.contourArea(contour)
-
-        if 10 < area : # ideal(500), oxide(800)
-            print(area)
-            upThreads.append(contour)
-            cv.drawContours(idealBoltPhoto, [contour], -1, (0, 255, 0), 2)
-
-    # focuses on the lower edge
-    x1 = 2200
-    x2 = 2900
-    y1 = 1480
-    y2 = 1510
-
-    preview = img.copy()
-    cv.rectangle(preview, (x1,y1),(x2,y2), (0,255,0), 5) #(x1,y1),(x2,y2) measured from the top left
-
-    cannyLow = gray.copy()*0
-    cannyLow[y1:y2, x1:x2] = cv.Canny(gray.copy()[y1:y2, x1:x2], lowerThresh, lowerThresh)
-    cv.imwrite("frameworkOperator/dataOut/Canny Edges Shaft.jpg", cannyLow)
-
-    cannyLow = cv.dilate(cannyLow, None, iterations=6) # ideal(5), oxide(3)
-    cannyLow = cv.erode(cannyLow, None, iterations=1)
-
-    lowContours, hierarchies = cv.findContours(cannyLow, cv.RETR_LIST, cv.CHAIN_APPROX_NONE)
-
-    Contours = img.copy()
-    cv.drawContours(Contours, lowContours, -1, (0,255,0), 2) #cv.drawContours(image being drawn on, contours, which contours to draw? just use -1, color, line thickness)
-    cv.imwrite("frameworkOperator/dataOut/Contours 50.jpg", Contours)
-
-    lowThreads = []
-
-    for contour in lowContours:
-        area = cv.contourArea(contour)
-
-        if 10 < area : # ideal(500), oxide(800)
-            print(area)
-            lowThreads.append(contour)
-            cv.drawContours(idealBoltPhoto, [contour], -1, (0, 255, 0), 2)
-
-    cv.imwrite("frameworkOperator/dataOut/Contours on the Ideal Bolt.jpg", idealBoltPhoto)
-
-    print(f'\n There are {len(upThreads)} threads on the left side of the image')
-    print(f'\n There are {len(lowThreads)} threads on the right side of the image') # Should be 17 when looking at just the threads
-    return len(lowThreads) == 17

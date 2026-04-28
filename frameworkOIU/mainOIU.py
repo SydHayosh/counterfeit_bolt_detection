@@ -16,5 +16,8 @@ def runTests():
     countThreads()
     standMarkCheck()
     print("Bolt color is " + color)
+
     setRegion(HEAD, OFF)
     setRegion(SHAFT, OFF)
+
+    return color == "gold"
