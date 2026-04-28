@@ -22,7 +22,7 @@ def magRead(timer):
         x, y, z = sensor.magnetic
         try:
             temp = sensor.temperature
-        except:
+        except Exception:
             temp = 0
         testX.append(x)
         testY.append(y)
@@ -39,10 +39,12 @@ def magRead(timer):
 
 i2c = board.I2C()
 
-global sensor
 try:
     sensor = maglib.MLX90393(i2c)
 except:
     sensor = maglib.MLX90393(i2c, address=0x18, gain=maglib.GAIN_1X)
+
+sensor.reset()
+time.sleep(0.1)
 
 
