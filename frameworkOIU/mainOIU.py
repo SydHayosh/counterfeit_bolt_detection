@@ -9,12 +9,13 @@ from .color import colorCheck
 def runTests():
     setRegion(HEAD, WHITE)
     capture_head()
-    colorCheck()
+    color = colorCheck()
     setRegion(HEAD, BLUE)
     setRegion(SHAFT, WHITE)
     capture_photos()
     countThreads()
     standMarkCheck()
+    print("Bolt color is " + color)
     setRegion(HEAD, OFF)
     setRegion(SHAFT, OFF)
 

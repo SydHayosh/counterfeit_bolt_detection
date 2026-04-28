@@ -39,8 +39,17 @@ def colorCheck():
     print(f"Average BGR color: ({b:.1f}, {g:.1f}, {r:.1f})")
     print(f"Average RGB color: ({r:.1f}, {g:.1f}, {b:.1f})")
 
-    # Optional: visualize sampling area
-    display = img.copy()
-    cv.circle(display, (CENTER_X, CENTER_Y), SAMPLE_RADIUS, (0, 255, 0), 2)
-    cv.imwrite(OUTPUT_DEBUG, display)
+    if(r > 100 and g > 100 and b > 100):
+        return "silver"
+    elif(b > r and r > g):
+        return "black"
+    elif(r > b and b > g):
+        return "gold"
+    else:
+        return "unknown"
+
+    # # Optional: visualize sampling area
+    # display = img.copy()
+    # cv.circle(display, (CENTER_X, CENTER_Y), SAMPLE_RADIUS, (0, 255, 0), 2)
+    # cv.imwrite(OUTPUT_DEBUG, display)
 
