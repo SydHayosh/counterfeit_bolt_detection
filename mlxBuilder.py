@@ -27,8 +27,8 @@ ambC = []
 
 try:
     sensor = maglib.MLX90393(i2c, address = 0x18, gain=maglib.GAIN_1X)
-    print("Press MID to record ambient.")
-    
+    sensor.reset()
+    time.sleep(0.1)
     #Button debounce, only moves to next stage once button is pressed then unpressed
     while True:
         if not MID.value:
@@ -37,6 +37,7 @@ try:
     
     while True:
         
+        time.sleep(0.05)
         x, y, z = sensor.magnetic
         temp = sensor.temperature
         
@@ -86,6 +87,7 @@ try:
     
     while runTest:
         
+        time.sleep(0.5)
         timer = time.monotonic()
         x, y, z = sensor.magnetic
         temp = sensor.temperature
@@ -156,9 +158,13 @@ try:
             testC.clear()
         
         time.sleep(0.1)
-except Exception:
-    print("Unexpected Exception")
-    pass
+except Exception as e:
+    print(f"Unexpected Exception: {e}")
+    try:
+        sensor.reset()
+    except Exception:
+        pass
+    
 
 print("\n\n\n\n\n=====================")
 
