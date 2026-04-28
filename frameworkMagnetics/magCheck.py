@@ -61,7 +61,7 @@ def getIdealData(num_std):
     idealData = [x, y, z]
     return idealData
 
-def magTest(idealData, ambient):
+def magTest(idealData, ambient):    
     passCriteria = [False, False, False]
     sample = magRead(3)
     
