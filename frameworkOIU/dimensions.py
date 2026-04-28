@@ -41,6 +41,27 @@ def countThreads():
     # -----------------------------
     # STAGE 2: DETECT THREADS
     # -----------------------------
+    def extract_thread_contours(roi, y_offset, x_offset):
+        if roi is None or roi.size == 0:
+            return []
+    
+        edges = cv.Canny(roi, 30, 100)
+        edges = cv.dilate(edges, None, iterations=2)
+        edges = cv.erode(edges, None, iterations=1)
+
+        contours, _ = cv.findContours(edges, cv.RETR_LIST, cv.CHAIN_APPROX_NONE)
+
+        thread_contours = []
+
+        for c in contours:
+            area = cv.contourArea(c)
+
+            if 10 < area:
+                c = c + np.array([[x_offset, y_offset]])
+                thread_contours.append(c)
+
+        return thread_contours
+    
     def detect_threads(img, bolt_bbox):
         x, y, w, h = bolt_bbox
 
@@ -72,25 +93,6 @@ def countThreads():
         cv.rectangle(debug, (x1, top_y1), (x2, top_y2), (255, 0, 0), 2)
         cv.rectangle(debug, (x1, bot_y1), (x2, bot_y2), (0, 0, 255), 2)
 
-        def extract_thread_contours(roi, y_offset, x_offset):
-            edges = cv.Canny(roi, 30, 100)
-            edges = cv.dilate(edges, None, iterations=2)
-            edges = cv.erode(edges, None, iterations=1)
-
-            contours, _ = cv.findContours(edges, cv.RETR_LIST, cv.CHAIN_APPROX_NONE)
-
-            thread_contours = []
-
-            for c in contours:
-                area = cv.contourArea(c)
-
-                if 10 < area:
-                    c = c + np.array([[x_offset, y_offset]])
-                    thread_contours.append(c)
-
-            return thread_contours
-
-
         top_threads = extract_thread_contours(top_band, top_y1, x1)
         bottom_threads = extract_thread_contours(bottom_band, bot_y1, x1)
 
@@ -120,7 +122,13 @@ def countThreads():
     cv.rectangle(output, (x, y), (x+w, y+h), (0, 255, 0), 3)
 
     # Stage 2: Thread detection
-    top_threads, bottom_threads = detect_threads(img, bolt_bbox)
+    result = detect_threads(img, bolt_bbox)
+
+    if not result or len(result) != 2:
+        print("Thread detection failed safely")
+        return  # prevents crash
+
+    top_threads, bottom_threads = result
 
     for t in top_threads:
         cv.drawContours(output, [t], -1, (0, 0, 255), 2)
