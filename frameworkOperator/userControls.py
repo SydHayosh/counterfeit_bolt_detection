@@ -31,7 +31,7 @@ def startUp():
     # Reads the ideal bolt magnetic dataset
     global idealData
     #idealData = getIdealData(magCheck.acceptedNumOfStdDev)
-    idealData = getIdealData(2)
+    idealData = getIdealData(3)
     global ambient
     ambient = magRead(3)
     print(idealData)
