@@ -19,3 +19,14 @@ def capture_photos():
         "--immediate",
         "-o", "frameworkOIU/inputCV/bolt_shaft.jpg"
     ])
+
+def capture_head():
+    
+    subprocess.run([
+        "rpicam-still",
+        "--camera", "0",
+        "--autofocus-mode", "manual",
+        "--lens-position", "18",
+        "--immediate",
+        "-o", "frameworkOIU/inputCV/bolt_head.jpg"
+    ])
