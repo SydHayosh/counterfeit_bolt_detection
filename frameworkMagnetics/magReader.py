@@ -19,7 +19,7 @@ def magRead(timer):
         testY.append(y)
         testZ.append(z)
         testC.append(temp)
-        print("X: "{x:.2f}" | Y: "{y:.2f}" | Z: "{z:.2f})
+        print(f"X: {x:.2f} | Y: {y:.2f} | Z: {z:.2f}")
         
         time.sleep(0.05)
 
