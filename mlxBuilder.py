@@ -94,7 +94,6 @@ try:
         timer = time.monotonic()
         x, y, z = sensor.magnetic
         temp = sensor.temperature
-        timer = time.monotonic()
                 
         displayOut = [f'Insert sample...                         ',
         f'Runtime: {time.monotonic() - timeInit:.3f}s',
