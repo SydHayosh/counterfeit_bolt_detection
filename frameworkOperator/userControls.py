@@ -1,4 +1,4 @@
-from frameworkMagnetics.magReader import magRead, cleanup
+from frameworkMagnetics.magReader import magRead
 from frameworkMagnetics.magCheck import getIdealData, magTest
 from ledTest import ledCheck, setRegion, RED, GREEN, BLUE, WHITE, OFF, TOP, HEAD, SHAFT
 from frameworkOIU.mainOIU import runOIUTests
@@ -52,9 +52,13 @@ def startTest():
 
     if magResult:
         lcd.write_string("Magnetics Passed")
+        lcd.cursor_pos = (1,0)
+        lcd.write_string("Starting Optics")
         setRegion(TOP, BLUE)
     else:
         lcd.write_string("Magnetics Failed")
+        cd.cursor_pos = (1,0)
+        lcd.write_string("Ending...")
         setRegion(TOP, RED)
     
     print(magResult)
@@ -150,7 +154,7 @@ debugMenu = []
 currentIndex = 0
 topDisplayIndex = 0 #When the menu is greater then 2 options 
 
-atexit.register(cleanup)
+#atexit.register(cleanup)
 currentMenu = mainMenu
 
 # functions

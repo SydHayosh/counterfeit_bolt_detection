@@ -1,25 +1,14 @@
 import time
 import board
 import busio
-import smbus2
 import adafruit_mlx90393 as maglib
 import numpy as np
-
-def cleanup():
-    try:
-        sensor.reset()
-    except Exception:
-        pass
-    try:
-        i2c.unlock()
-    except Exception:
-        pass
-    i2c.deinit()
 
 def magRead(timer):
     sensor.reset()
     testX,testY,testZ,testC = [], [], [], []
     testTime = time.monotonic() + timer
+    
     while (time.monotonic() <= testTime):
         x, y, z = sensor.magnetic
         try:
@@ -30,6 +19,8 @@ def magRead(timer):
         testY.append(y)
         testZ.append(z)
         testC.append(temp)
+        
+        time.sleep(0.05)
 
     meanX = np.mean(testX)
     meanY = np.mean(testY)

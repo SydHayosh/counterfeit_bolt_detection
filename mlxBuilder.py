@@ -8,6 +8,8 @@ import pandas as pd
 from frameworkOperator.pins import UP, DWN, L, R, MID, inputPins, inputNames, debounce
 import frameworkOperator.pins
 
+print("Imports ok")
+
 i2c = board.I2C()
 
 testX = []
@@ -28,13 +30,15 @@ ambC = []
 try:
     sensor = maglib.MLX90393(i2c, address = 0x18, gain=maglib.GAIN_1X)
     sensor.reset()
+    print("Sensor init ok")
     time.sleep(0.1)
     #Button debounce, only moves to next stage once button is pressed then unpressed
     while True:
         if not MID.value:
+            print("Evaluate MID.value ok")
             debounce(MID)
             break
-    
+    print("Button press ok")
     while True:
         
         time.sleep(0.05)
