@@ -1,6 +1,5 @@
 import time
 import board
-import busio
 import digitalio
 import adafruit_mlx90393 as maglib
 import RPi.GPIO as GPIO
