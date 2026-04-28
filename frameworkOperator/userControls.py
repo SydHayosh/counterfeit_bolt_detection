@@ -63,8 +63,7 @@ def startTest():
     
     print(magResult)
     time.sleep(3)
-
-
+    OIUResult = runOIUTests()
     lcd.clear()
     lcd.cursor_pos = (0,0)#(row, col)
 
