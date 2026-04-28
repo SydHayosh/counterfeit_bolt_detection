@@ -3,7 +3,7 @@ import cv2 as cv
 
 # ROI parameters
 center = (2205,1635) # true center is (2304,1296)
-radius = 165
+radius = 170
 
 lowerThresh = 50
 upperThresh = 50
