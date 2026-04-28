@@ -11,8 +11,8 @@ def cleanup():
     except Exception:
         pass
     try:
-		i2c.unlock()
-	except Exception:
+        i2c.unlock()
+    except Exception:
         pass
     i2c.deinit()
 
