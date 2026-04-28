@@ -54,32 +54,34 @@ def getIdealData(num_std):
     yRaw = idealBolt.loc["Y"].to_numpy()
     zRaw = idealBolt.loc["Z"].to_numpy()
 
-    x = [ (xRaw[0] - num_std*xRaw[1]), (xRaw[0] + num_std*xRaw[1]), xRaw[0], xRaw[1]]
-    y = [ (yRaw[0] - num_std*yRaw[1]), (yRaw[0] + num_std*yRaw[1]), yRaw[0], yRaw[1] ]
-    z = [ (zRaw[0] - num_std*zRaw[1]), (zRaw[0] + num_std*zRaw[1]), zRaw[0], zRaw[1] ]
+    x = [ xRaw[0], xRaw[1] ]
+    y = [ yRaw[0], yRaw[1] ]
+    z = [ zRaw[0], zRaw[1] ]
 
     idealData = [x, y, z]
     return idealData
 
-def magTest(idealData, ambient):    
+def magTest(idealData):    
     passCriteria = [0, 0, 0]
     magResult = False
     sample = magRead(5)
     
     #This code will check to see if the samples X, Y, and Z readings are good. 
     for i in range(len(passCriteria)):
-        #sample[i] -= ambient[i]
-        failMin = idealData[i][2] - 2*idealData[i][3]
-        failMax = idealData[i][2] + 2*idealData[i][3]
-        print(format(idealData[i][0]) + " <= " + format(sample[i]) +" <= " + format(idealData[i][1]) +"?")
 
-        if (idealData[i][0] <= sample[i] <= idealData[i][1]):
-            
-            if (sample[i] < failMin) or (sample[i] > failMax):
-                return False
-            
+        autofailMin = idealData[i][0] - 4*idealData[i][1]
+        autofailMax = idealData[i][0] + 4*idealData[i][1]
+        
+        rangeMin = idealData[i][0] - acceptedNumOfStdDev*idealData[i][1]
+        rangeMax = idealData[i][0] + acceptedNumOfStdDev*idealData[i][1]
+        
+        print(format(rangeMin) + " <= " + format(sample[i]) +" <= " + format(rangeMax) +"?")
+
+        if (rangeMin <= sample[i] <= rangeMax):
             passCriteria[i] = 1
             print("Yes")
+        elif (sample[i] < autofailMin) or (sample[i] > autofailMax):
+                return False
         else:
             passCriteria[i] = 0
             print("No")

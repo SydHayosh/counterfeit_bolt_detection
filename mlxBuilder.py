@@ -8,12 +8,9 @@ import pandas as pd
 from frameworkOperator.pins import UP, DWN, L, R, MID, inputPins, inputNames, debounce
 import frameworkOperator.pins
 
-i2c = board.I2C()
+print("Imports ok")
 
-try:
-    i2c.unlock() # Force an unlock in case it was stuck
-except:
-    i2c.deinit()
+i2c = board.I2C()
 
 testX = []
 testY = []
@@ -31,17 +28,20 @@ ambZ = []
 ambC = []
 
 try:
-    sensor = maglib.MLX90393(i2c)
-    print("Press MID to record ambient.")
-    
+    sensor = maglib.MLX90393(i2c, address = 0x18, gain=maglib.GAIN_1X)
+    sensor.reset()
+    print("Sensor init ok")
+    time.sleep(0.1)
     #Button debounce, only moves to next stage once button is pressed then unpressed
     while True:
         if not MID.value:
+            print("Evaluate MID.value ok")
             debounce(MID)
             break
-    
+    print("Button press ok")
     while True:
         
+        time.sleep(0.05)
         x, y, z = sensor.magnetic
         temp = sensor.temperature
         
@@ -91,6 +91,7 @@ try:
     
     while runTest:
         
+        time.sleep(0.5)
         timer = time.monotonic()
         x, y, z = sensor.magnetic
         temp = sensor.temperature
@@ -161,31 +162,25 @@ try:
             testC.clear()
         
         time.sleep(0.1)
-
-finally:
+except Exception as e:
+    print(f"Unexpected Exception: {e}")
     try:
-        i2c.unlock()
-    except:
-        pass      
-    i2c.deinit()
+        sensor.reset()
+    except Exception:
+        pass
+    
 
 print("\n\n\n\n\n=====================")
 
 boltName = input("Enter Boltname: ")
 
-# Subtract ambient from each entry
-adjX = [v - ambX for v in entryX]
-adjY = [v - ambY for v in entryY]
-adjZ = [v - ambZ for v in entryZ]
-adjC = [v - ambC for v in entryC]
-
-n = len(adjX)
-bolt_cols = {f'Bolt{i+1}': [adjX[i], adjY[i], adjZ[i], adjC[i]] for i in range(n)}
+n = len(entryX)
+bolt_cols = {f'Bolt{i+1}': [entryX[i], entryY[i], entryZ[i], entryC[i]] for i in range(n)}
 
 df = pd.DataFrame({
     'Axis':   ['X', 'Y', 'Z', 'Temp'],
-    'Mean':   [np.mean(adjX), np.mean(adjY), np.mean(adjZ), np.mean(adjC)],
-    'StdDev': [np.std(adjX),  np.std(adjY),  np.std(adjZ),  np.std(adjC)],
+    'Mean':   [np.mean(entryX), np.mean(entryY), np.mean(entryZ), np.mean(entryC)],
+    'StdDev': [np.std(entryX),  np.std(entryY),  np.std(entryZ),  np.std(entryC)],
     **bolt_cols
 })
 

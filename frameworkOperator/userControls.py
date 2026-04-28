@@ -1,8 +1,8 @@
-from frameworkMagnetics.magReader import magRead, cleanup
+from frameworkMagnetics.magReader import magRead
 from frameworkMagnetics.magCheck import getIdealData, magTest
 from ledTest import ledCheck, setRegion, RED, GREEN, BLUE, WHITE, OFF, TOP, HEAD, SHAFT
 from frameworkOIU.mainOIU import runOIUTests
-import frameworkMagnetics.magCheck
+from frameworkMagnetics import magCheck
 import atexit
 from RPLCD.i2c import CharLCD
 import time
@@ -28,14 +28,17 @@ def updateMenu(newMenu):
     topDisplayIndex = 0
 
 def startUp():
+    lcd.cursor_pos = (0,0)
+    lcd.write_string("Initializing...")
     # Reads the ideal bolt magnetic dataset
     global idealData
     #idealData = getIdealData(magCheck.acceptedNumOfStdDev)
     idealData = getIdealData(3)
     global ambient
-    ambient = magRead(3)
+    ambient = [0,0,0]
+    #ambient = magRead(3)
     print(idealData)
-    print(ambient)
+    #print(ambient)
 
 # Main menu options =============================================================================
 def startTest():
@@ -50,15 +53,17 @@ def startTest():
 
     lcd.clear()
     lcd.cursor_pos = (0,0)#(row, col)
-
+    print(magResult)
     if magResult:
         lcd.write_string("Magnetics Passed")
     else:
+        setRegion(TOP, RED)
         lcd.write_string("Magnetics Failed")
+        setRegion(TOP, RED)
     
     print(magResult)
+    time.sleep(3)
 
-    OIUResult = runOIUTests()
 
     lcd.clear()
     lcd.cursor_pos = (0,0)#(row, col)
@@ -148,7 +153,7 @@ debugMenu = []
 currentIndex = 0
 topDisplayIndex = 0 #When the menu is greater then 2 options 
 
-atexit.register(cleanup)
+#atexit.register(cleanup)
 currentMenu = mainMenu
 
 # functions
@@ -195,7 +200,7 @@ mainMenu.append(MenuOption("Settings", settings))
 mainMenu.append(MenuOption("Debug Menu", debugSubmenu))
 
 settingsMenu.append(MenuOption("Ideal Bolt", idealBolt))
-settingsMenu.append(MenuOption("Adv Settings", advSettings))
+settingsMenu.append(MenuOption("Adv. Settings", advSettings))
 
 advSettingsMenu.append(MenuOption("Mag criteria", magCriteria))
 advSettingsMenu.append(MenuOption("Mag Test Duration", magTestDuration))
