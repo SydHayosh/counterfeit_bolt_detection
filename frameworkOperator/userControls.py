@@ -2,7 +2,7 @@ from frameworkMagnetics.magReader import magRead
 from frameworkMagnetics.magCheck import getIdealData, magTest
 from ledTest import ledCheck, setRegion, RED, GREEN, BLUE, WHITE, OFF, TOP, HEAD, SHAFT
 from frameworkOIU.mainOIU import runOIUTests
-import frameworkMagnetics.magCheck
+from frameworkMagnetics import magCheck
 import atexit
 from RPLCD.i2c import CharLCD
 import time
@@ -60,6 +60,7 @@ def startTest():
         setRegion(TOP, BLUE)
         time.sleep(3)
     else:
+		setRegion(TOP, RED)
         lcd.write_string("Magnetics Failed")
         lcd.cursor_pos = (1,0)
         lcd.write_string("Ending.")
@@ -67,7 +68,6 @@ def startTest():
         lcd.write_string(".")
         time.sleep(1)
         lcd.write_string(".")
-        setRegion(TOP, RED)
 
     if magResult:
         if runOIUTests(): #test value hallReader.py should get this value on its own
@@ -206,7 +206,7 @@ mainMenu.append(MenuOption("Settings", settings))
 mainMenu.append(MenuOption("Debug Menu", debugSubmenu))
 
 settingsMenu.append(MenuOption("Ideal Bolt", idealBolt))
-settingsMenu.append(MenuOption("Adv Settings", advSettings))
+settingsMenu.append(MenuOption("Adv. Settings", advSettings))
 
 advSettingsMenu.append(MenuOption("Mag criteria", magCriteria))
 advSettingsMenu.append(MenuOption("Mag Test Duration", magTestDuration))
