@@ -68,6 +68,13 @@ def startTest():
             lcd.write_string("Optical Inspect:")
             lcd.cursor_pos = (1,0)#(row, col)
             lcd.write_string("Passed")
+        else:
+            setRegion(TOP, RED)
+            lcd.clear()
+            lcd.cursor_pos = (0,0)#(row, col)
+            lcd.write_string("Optical Inspect:")
+            lcd.cursor_pos = (1,0)#(row, col)
+            lcd.write_string("Failed")
 
     setRegion(HEAD, OFF)
     setRegion(SHAFT, OFF)
