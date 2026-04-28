@@ -172,6 +172,8 @@ finally:
 
 print("\n\n\n\n\n=====================")
 
+boltName = input("Enter Boltname: ")
+
 # Subtract ambient from each entry
 adjX = [v - ambX for v in entryX]
 adjY = [v - ambY for v in entryY]
