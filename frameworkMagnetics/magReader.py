@@ -43,6 +43,7 @@ def magRead(timer):
     return magResult
 
 reset_mlx(0x18)
+reset_mlx(0x18)
 i2c = busio.I2C(board.SCL, board.SDA)
 sensor = maglib.MLX90393(i2c, address=0x18)
 
