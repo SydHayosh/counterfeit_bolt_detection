@@ -111,7 +111,7 @@ try:
         while not R.value:
         
             displayOut = [f'Holding R...                         ',
-            f'Closing in: {(timer + 3) - time.monotonic():.0}s      ',
+            f'Closing in: {(timer + 3) - time.monotonic():.0f}s      ',
             f'X:    {x:.3f} μT  ',
             f'Y:    {y:.3f} μT  ',
             f'Z:    {z:.3f} μT  ',
