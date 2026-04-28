@@ -165,7 +165,7 @@ print("\n\n\n\n\n=====================")
 boltName = input("Enter Boltname: ")
 
 n = len(entryX)
-bolt_cols = {f'Bolt{i+1}': [entryX[i], entryY[i], entry[i], entryC[i]] for i in range(n)}
+bolt_cols = {f'Bolt{i+1}': [entryX[i], entryY[i], entryZ[i], entryC[i]] for i in range(n)}
 
 df = pd.DataFrame({
     'Axis':   ['X', 'Y', 'Z', 'Temp'],
