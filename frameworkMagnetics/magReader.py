@@ -8,14 +8,19 @@ import numpy as np
 def reset_mlx(address=0x18, bus_num=1):
     bus = smbus2.SMBus(bus_num)
     try:
-        bus.write_byte(address, 0xF0)  # Exit mode
+        bus.write_byte(address, 0xF0)   # Exit mode
         time.sleep(0.01)
-        bus.write_byte(address, 0xF1)  # Reset
-        time.sleep(0.05)               # MLX boot time
-    except OSError:
-        pass
+        # First reset attempt may fail — retry until it succeeds
+        for attempt in range(5):
+            try:
+                bus.write_byte(address, 0xF1)
+                break
+            except OSError:
+                time.sleep(0.02)
+        time.sleep(0.1)  # Give MLX more time to fully boot
     finally:
         bus.close()
+    time.sleep(0.1)  # Extra settle time before I2C bus reinit
 
 def magRead(timer):
 
