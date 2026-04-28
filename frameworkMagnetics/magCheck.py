@@ -72,8 +72,10 @@ def magTest(idealData, ambient):
         print(format(idealData[i][0]) + " <= " + format(sample[i]) +" <= " + format(idealData[i][1]) +"?")
         if (idealData[i][0] <= sample[i] <= idealData[i][1]):
             passCriteria[i] = 1
+            print("Yes")
         else:
             passCriteria[i] = 0
+            print("No")
 
     if sum(passCriteria) >= 2:
         magResult = True
