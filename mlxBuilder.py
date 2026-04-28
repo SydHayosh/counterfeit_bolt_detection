@@ -31,7 +31,7 @@ ambZ = []
 ambC = []
 
 try:
-    sensor = maglib.MLX90393(i2c)
+    sensor = maglib.MLX90393(i2c, address = 0x18, gain=maglib.GAIN_1X)
     print("Press MID to record ambient.")
     
     #Button debounce, only moves to next stage once button is pressed then unpressed
