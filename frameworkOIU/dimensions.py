@@ -122,7 +122,13 @@ def countThreads():
     cv.rectangle(output, (x, y), (x+w, y+h), (0, 255, 0), 3)
 
     # Stage 2: Thread detection
-    top_threads, bottom_threads = detect_threads(img, bolt_bbox)
+    result = detect_threads(img, bolt_bbox)
+
+    if not result or len(result) != 2:
+        print("Thread detection failed safely")
+        return  # prevents crash
+
+    top_threads, bottom_threads = result
 
     for t in top_threads:
         cv.drawContours(output, [t], -1, (0, 0, 255), 2)
