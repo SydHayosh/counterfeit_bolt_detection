@@ -57,9 +57,8 @@ def startTest():
     if magResult:
         lcd.write_string("Magnetics Passed")
     else:
-        setRegion(TOP, RED)
         lcd.write_string("Magnetics Failed")
-        setRegion(TOP, RED)
+
     
     print(magResult)
     time.sleep(3)
@@ -77,6 +76,19 @@ def startTest():
         lcd.write_string("Optical Inspect")
         lcd.cursor_pos = (1,0)#(row, col)
         lcd.write_string("Failed")
+    
+    lcd.clear()
+    lcd.cursor_pos = (0,0)
+
+    time.sleep(3)
+    if OIUResult: #test value hallReader.py should get this value on its own
+        lcd.write_string("Passed")
+        lcd.cursor_pos = (1,0)#(row, col)
+        lcd.write_string("Ideal Bolt")
+    else:
+        lcd.write_string("Failed")
+        lcd.cursor_pos = (1,0)#(row, col)
+        lcd.write_string("Counterfeit")
 
     setRegion(HEAD, OFF)
     setRegion(SHAFT, OFF)
