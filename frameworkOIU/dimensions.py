@@ -49,7 +49,7 @@ def countThreads():
 
         if h < (2 * BAND_HEIGHT + 2 * MARGIN):
             print("Bolt too small for thread detection")
-            return []
+            return [], []
         
         gray = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
         blur = cv.GaussianBlur(gray, (7, 7), 0)
