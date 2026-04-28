@@ -16,6 +16,7 @@ def cleanup():
         pass
 
 def magRead(timer):
+    sensor.reset()
     testX,testY,testZ,testC = [], [], [], []
     testTime = time.monotonic() + timer
     while (time.monotonic() <= testTime):
@@ -41,7 +42,7 @@ i2c = board.I2C()
 
 try:
     sensor = maglib.MLX90393(i2c)
-except:
+except Exception:
     sensor = maglib.MLX90393(i2c, address=0x18, gain=maglib.GAIN_1X)
 
 sensor.reset()

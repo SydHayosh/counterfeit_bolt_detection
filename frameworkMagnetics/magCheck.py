@@ -70,7 +70,7 @@ def magTest(idealData, ambient):
     for i in range(len(passCriteria)):
         #sample[i] -= ambient[i]
         failMin = idealData[i][2] - 3*idealData[i][3]
-        failMax = idealData[i][2] + 3*idealData[i][4]
+        failMax = idealData[i][2] + 3*idealData[i][3]
         print(format(idealData[i][0]) + " <= " + format(sample[i]) +" <= " + format(idealData[i][1]) +"?")
 
         if (idealData[i][0] <= sample[i] <= idealData[i][1]):
