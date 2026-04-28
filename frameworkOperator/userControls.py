@@ -3,7 +3,7 @@ from frameworkMagnetics.magCheck import getIdealData, magTest
 from ledTest import ledCheck, setRegion, RED, GREEN, BLUE, WHITE, OFF, TOP, HEAD, SHAFT
 from frameworkOIU.mainOIU import runTests
 import frameworkMagnetics.magCheck
-
+import atexit
 from RPLCD.i2c import CharLCD
 import time
 import board
@@ -20,6 +20,12 @@ lcd = CharLCD(
     #charmap='A02'
     auto_linebreaks = False
 )
+
+def i2cClean():
+    try:
+        i2c.deinit()
+    except Exception:
+        pass
 
 def updateMenu(newMenu):
     global currentMenu, currentIndex, topDisplayIndex
@@ -150,6 +156,7 @@ debugMenu = []
 currentIndex = 0
 topDisplayIndex = 0 #When the menu is greater then 2 options 
 
+atexit.register(i2cClean)
 currentMenu = mainMenu
 
 # functions
