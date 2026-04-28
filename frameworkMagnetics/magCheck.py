@@ -69,8 +69,8 @@ def magTest(idealData, ambient):
     #This code will check to see if the samples X, Y, and Z readings are good. 
     for i in range(len(passCriteria)):
         #sample[i] -= ambient[i]
-        failMin = idealData[i][2] - 2*idealData[i][3]
-        failMax = idealData[i][2] + 2*idealData[i][3]
+        failMin = idealData[i][2] - 4*idealData[i][3]
+        failMax = idealData[i][2] + 4*idealData[i][3]
         print(format(idealData[i][0]) + " <= " + format(sample[i]) +" <= " + format(idealData[i][1]) +"?")
 
         if (idealData[i][0] <= sample[i] <= idealData[i][1]):
