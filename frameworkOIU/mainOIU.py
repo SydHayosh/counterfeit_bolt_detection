@@ -6,7 +6,7 @@ from .standardized_markings import standMarkCheck
 
 
 def runTests():
-    setRegion(HEAD, WHITE)
+    setRegion(HEAD, BLUE)
     setRegion(SHAFT, WHITE)
     capture_photos()
     countThreads()
