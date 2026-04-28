@@ -80,10 +80,10 @@ def magTest(idealData, ambient):
         if (rangeMin <= sample[i] <= rangeMax):
             passCriteria[i] = 1
             print("Yes")
-        else if (sample[i] < autofailMin) or (sample[i] > autofailMax):
-            return False
+        elif (sample[i] < autofailMin) or (sample[i] > autofailMax):
+                return False
         else:
-			passCriteria[i] = 0
+            passCriteria[i] = 0
             print("No")
 
     if sum(passCriteria) >= 2:

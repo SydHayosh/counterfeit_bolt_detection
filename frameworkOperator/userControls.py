@@ -60,7 +60,7 @@ def startTest():
         setRegion(TOP, BLUE)
         time.sleep(3)
     else:
-		setRegion(TOP, RED)
+        setRegion(TOP, RED)
         lcd.write_string("Magnetics Failed")
         lcd.cursor_pos = (1,0)
         lcd.write_string("Ending.")
