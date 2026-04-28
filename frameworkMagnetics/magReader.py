@@ -5,6 +5,16 @@ import smbus2
 import adafruit_mlx90393 as maglib
 import numpy as np
 
+def cleanup():
+    try:
+        sensor.reset()
+    except Exception:
+        pass
+    try:
+        i2c.deinit()
+    except Exception:
+        pass
+
 def magRead(timer):
     testX,testY,testZ,testC = [], [], [], []
     testTime = time.monotonic() + timer
@@ -32,4 +42,5 @@ try:
     sensor = maglib.MLX90393(i2c)
 except:
     sensor = maglib.MLX90393(i2c, address=0x18, gain=maglib.GAIN_1X)
+
 
