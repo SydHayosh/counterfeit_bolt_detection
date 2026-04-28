@@ -10,7 +10,7 @@ CENTER_Y = 1635
 
 # Radius of sampling area (in pixels)
 SAMPLE_RADIUS = 10
-
+OUTPUT_DEBUG = 'frameworkOperator/dataOut/Color Sample.jpg'
 
 def get_center_color(img, cx, cy, r):
     # Create a circular mask
@@ -37,11 +37,10 @@ def colorCheck():
 
     b, g, r = avg_bgr
     print(f"Average BGR color: ({b:.1f}, {g:.1f}, {r:.1f})")
-
-    # Optional: convert to RGB for readability
     print(f"Average RGB color: ({r:.1f}, {g:.1f}, {b:.1f})")
 
     # Optional: visualize sampling area
     display = img.copy()
     cv.circle(display, (CENTER_X, CENTER_Y), SAMPLE_RADIUS, (0, 255, 0), 2)
+    cv.imwrite(OUTPUT_DEBUG, display)
 
