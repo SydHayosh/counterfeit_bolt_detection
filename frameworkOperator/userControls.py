@@ -28,6 +28,8 @@ def updateMenu(newMenu):
     topDisplayIndex = 0
 
 def startUp():
+	lcd.cursor_pos(0,0)
+	lcd.write_string("Initializing...")
     # Reads the ideal bolt magnetic dataset
     global idealData
     #idealData = getIdealData(magCheck.acceptedNumOfStdDev)
