@@ -2,6 +2,7 @@ from frameworkMagnetics.magReader import magRead
 from frameworkMagnetics.magCheck import getIdealData, magTest
 from ledTest import ledCheck, setRegion, RED, GREEN, BLUE, WHITE, OFF, TOP, HEAD, SHAFT
 from frameworkOIU.mainOIU import runTests
+import frameworkMagnetics.magCheck
 
 from RPLCD.i2c import CharLCD
 import time
